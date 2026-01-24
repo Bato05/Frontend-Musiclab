@@ -29,7 +29,7 @@
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-envelope"></i>
             </span>
-            <input type="text" class="form-control bg-transparent border-0 text-white" placeholder="First Name">
+            <input type="text" class="form-control bg-transparent border-0 text-white" placeholder="First Name" autofocus>
           </div>
         </div>
 
@@ -45,6 +45,7 @@
             </span>
           </div>
         </div>
+
         <div class="text-start mb-3">
           <label class="form-label small fw-bold text-light">Email</label>
           <div class="input-group custom-input-group">
@@ -54,6 +55,7 @@
             <input type="email" class="form-control bg-transparent border-0 text-white" placeholder="tu@email.com">
           </div>
         </div>
+
         <div class="text-start mb-4">
           <label class="form-label small fw-bold text-light">Password</label>
           <div class="input-group custom-input-group">
@@ -66,6 +68,7 @@
             </span>
           </div>
         </div>
+
         <div class="text-start mb-3">
           <label class="form-label small fw-bold text-light">Confirm Password</label>
           <div class="input-group custom-input-group">
@@ -75,29 +78,21 @@
             <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••">
           </div>
         </div>
+
         <div class="text-start mb-4">
-          <label class="form-label small fw-bold text-light">Instrument Type</label>
-          <div class="input-group custom-input-group">
-            <span class="input-group-text bg-transparent border-0 text-secondary">
-              <i class="bi bi-lock"></i>
-            </span>
-            <input type="" class="form-control bg-transparent border-0 text-white" placeholder="">
-            <span class="input-group-text bg-transparent border-0 text-secondary cursor-pointer">
-              <i class="bi bi-eye"></i>
-            </span>
-          </div>
+          <label for="exampleFormControlSelect2">Select a instrument</label>
+            <select multiple class="form-control" id="exampleFormControlSelect2">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
         </div>
-        <div class="text-start mb-4">
-          <label class="form-label small fw-bold text-light">Biography</label>
-          <div class="input-group custom-input-group">
-            <span class="input-group-text bg-transparent border-0 text-secondary">
-              <i class="bi bi-lock"></i>
-            </span>
-            <input type="textarea" class="form-control bg-transparent border-0 text-white">
-            <span class="input-group-text bg-transparent border-0 text-secondary cursor-pointer">
-              <i class="bi bi-eye"></i>
-            </span>
-          </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Biography</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
         </div>
 
         <button type="submit" class="btn btn-neon w-100 py-2 mb-4">
