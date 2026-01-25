@@ -6,6 +6,7 @@
 .auth-wrapper { width: 100%; max-width: 440px; }
 
 .logo-box {
+  margin-top: 15px;
   width: 70px; height: 70px;
   background: linear-gradient(135deg, #b000ff, #ff0080);
   border-radius: 18px;
@@ -53,22 +54,39 @@
 
 /* Color para navegadores modernos */
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
 }
 
 /* Soporte específico para Chrome/Safari/Edge */
 .form-control::-webkit-input-placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Soporte para Firefox */
 .form-control::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
   opacity: 1; /* Firefox baja la opacidad por defecto */
 }
 
 .text-purple { color: #b000ff; }
 .x-small { font-size: 0.75rem; }
 
-.label { color: aliceblue;}
+#Biography {
+    margin-bottom: 25px;
+}
+
+.labels{
+    color: aliceblue;
+    font-weight: bold;
+}
+
+#Register_biography {
+    background: rgba(255, 255, 255, 0.06);
+    color: aliceblue;
+}
+
+#Register_type_instrument {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgb(193, 200, 206);
+}

@@ -53,18 +53,18 @@
 
 /* Color para navegadores modernos */
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
 }
 
 /* Soporte específico para Chrome/Safari/Edge */
 .form-control::-webkit-input-placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Soporte para Firefox */
 .form-control::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
   opacity: 1; /* Firefox baja la opacidad por defecto */
 }
 
