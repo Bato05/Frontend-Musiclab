@@ -22,14 +22,14 @@
         </button>
     </div>
 
-      <form class="auth-card p-4">
+      <form [formGroup]="formulario" class="auth-card p-4">
         <div class="text-start mb-3">
           <label class="form-label small fw-bold text-light">First Name</label>
           <div class="input-group custom-input-group">
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-envelope"></i>
             </span>
-            <input type="text" class="form-control bg-transparent border-0 text-white" placeholder="First Name" autofocus>
+            <input type="text" class="form-control bg-transparent border-0 text-white" placeholder="First Name" formControlName="first_name" requiered autofocus>
           </div>
         </div>
 
@@ -39,7 +39,7 @@
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-lock"></i>
             </span>
-            <input type="text" class="form-control bg-transparent border-0 text-white" placeholder="Last Name">
+            <input type="text" class="form-control bg-transparent border-0 text-white" placeholder="Last Name" formControlName="last_name" requiered>
             <span class="input-group-text bg-transparent border-0 text-secondary cursor-pointer">
               <i class="bi bi-eye"></i>
             </span>
@@ -52,7 +52,7 @@
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-envelope"></i>
             </span>
-            <input type="email" class="form-control bg-transparent border-0 text-white" placeholder="email@email.com">
+            <input type="email" class="form-control bg-transparent border-0 text-white" placeholder="email@email.com" formControlName="email" requiered>
           </div>
         </div>
 
@@ -62,7 +62,7 @@
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-lock"></i>
             </span>
-            <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••">
+            <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••" formControlName="password" requiered>
             <span class="input-group-text bg-transparent border-0 text-secondary cursor-pointer">
               <i class="bi bi-eye"></i>
             </span>
@@ -75,13 +75,13 @@
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-envelope"></i>
             </span>
-            <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••">
+            <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••" requiered>
           </div>
         </div>
 
         <div class="text-start mb-4">
           <label class="labels" for="Register_type_instrument">Select a instrument</label>
-            <select multiple class="form-control" id="Register_type_instrument">
+            <select multiple class="form-control" id="Register_type_instrument" multiple formControlName="artist_type" required>
                 <option>Vocalist</option>
                 <option>Guitarist</option>
                 <option>Bassist</option>
@@ -97,10 +97,10 @@
 
         <div class="form-group" class="text-start" id="Biography">
             <label class="labels" for="Register_biography">Biography</label>
-            <textarea class="form-control" id="Register_biography" rows="3"></textarea>
+            <textarea class="form-control" id="Register_biography" rows="3" formControlName="bio"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-neon w-100 py-2 mb-4">
+        <button type="submit" [disabled]="formulario.invalid" (click)="registrarse()" class="btn btn-neon w-100 py-2 mb-4">
           Register
         </button>
         <button type="reset" class="btn btn-neon w-100 py-2 mb-4">
