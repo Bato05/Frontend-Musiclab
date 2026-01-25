@@ -3,6 +3,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Validators, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 
+import { RegisterService } from '../../../services/registerService';
+import { inject } from '@angular/core';
+
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -10,13 +13,15 @@ import { CommonModule } from '@angular/common';
     RouterLink, 
     RouterLinkActive, 
     CommonModule,
-    ReactiveFormsModule 
+    ReactiveFormsModule
   ],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
 export class Register {
   public formulario: FormGroup;
+
+  private registerService = inject(RegisterService);// fundamental injectar el httpclient si no, no funciona
   
   constructor(private fb: FormBuilder) {
     this.formulario = this.fb.group({
@@ -34,7 +39,12 @@ export class Register {
     });
   }
 
-  registrarse() {
-    console.log(this.formulario.value);
+registrarse() {
+  if (this.formulario.valid) {
+    this.registerService.postUser(this.formulario.value).subscribe({
+      next: (res: any) => console.log('¡Usuario creado!', res),
+      error: (err: any) => console.error('Error en el registro', err)
+    });
   }
+}
 }
