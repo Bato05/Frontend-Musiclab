@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router'; 
+
 import { Router } from '@angular/router'; // importacion del Router
 import { Validators, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';

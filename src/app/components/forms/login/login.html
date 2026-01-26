@@ -21,14 +21,14 @@
         </button>
       </div>
 
-      <form>
+      <form [formGroup]="formulario">
         <div class="text-start mb-3">
           <label class="form-label small fw-bold text-light">Email</label>
           <div class="input-group custom-input-group">
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-envelope"></i>
             </span>
-            <input type="email" class="form-control bg-transparent border-0 text-white" placeholder="email@email.com" autofocus>
+            <input type="email" class="form-control bg-transparent border-0 text-white" placeholder="email@email.com" formControlName="email" requiered autofocus>
           </div>
         </div>
 
@@ -38,14 +38,14 @@
             <span class="input-group-text bg-transparent border-0 text-secondary">
               <i class="bi bi-lock"></i>
             </span>
-            <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••">
+            <input type="password" class="form-control bg-transparent border-0 text-white" placeholder="••••••••" formControlName="password">
             <span class="input-group-text bg-transparent border-0 text-secondary cursor-pointer">
               <i class="bi bi-eye"></i>
             </span>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-neon w-100 py-2 mb-4">
+        <button type="submit" [disabled]="formulario.invalid" (click)="logearse()" class="btn btn-neon w-100 py-2 mb-4">
           Login
         </button>
       </form>
