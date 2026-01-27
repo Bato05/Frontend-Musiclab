@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router'; 
 
 import { Router } from '@angular/router'; // importacion del Router
@@ -11,6 +11,7 @@ import { inject } from '@angular/core';
 @Component({
   selector: 'app-register',
   standalone: true,
+  encapsulation: ViewEncapsulation.None, 
   imports: [
     RouterLink, 
     RouterLinkActive, 
@@ -18,7 +19,7 @@ import { inject } from '@angular/core';
     ReactiveFormsModule
   ],
   templateUrl: './register.html',
-  styleUrl: './register.css',
+  styleUrl: '../../../app.css'
 })
 export class Register {
   public formulario: FormGroup;

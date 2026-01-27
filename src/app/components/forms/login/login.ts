@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router'; 
 
 import { Router } from '@angular/router'; // importacion del Router
@@ -11,12 +11,13 @@ import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-login',
+  encapsulation: ViewEncapsulation.None, 
   imports: [RouterLink, 
             RouterLinkActive,
             CommonModule,
             ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrl: '../../../app.css',
 })
 export class Login {
   public formulario: FormGroup;
