@@ -138,26 +138,64 @@ textarea.form-control:active {
 
 /* SELECT base */
 select.form-control {
-  background-color: rgba(255, 255, 255, 0.07);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  color: #ffffff;
-  padding: 12px;
-  transition: 0.3s;
-  min-height: 120px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    color: #ffffff;
+    padding: 10px;
+    min-height: 200px; /* Espacio para que las opciones respiren */
+    transition: all 0.3s ease;
+    outline: none;
+    overflow-y: auto;
 }
 
-/* Focus */
+/* 2. Foco del Selector (Borde neón) */
 select.form-control:focus {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: var(--neon-purple);
-  box-shadow: 0 0 0 2px rgba(176, 0, 255, 0.25);
-  outline: none;
+    border-color: var(--neon-purple);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 15px rgba(176, 0, 255, 0.4);
 }
 
-/* OPTIONS => sin fondo forzado */
+/* 3. Estilo de las Opciones Individuales (Base oscura) */
 select.form-control option {
-  color: #ffffff;
+    background-color: #1a0b3d; /* Fondo sólido oscuro para evitar el blanco */
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px;
+    margin-bottom: 6px; /* Separación real entre opciones */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* 4. OPCIÓN SELECCIONADA: MATCHING CON EL BOTÓN NEÓN */
+select.form-control option:checked {
+    /* Color de fondo base (Púrpura) */
+    background-color: var(--neon-purple);
+    
+    /* El truco: Doble sombra interna para simular el degradado lineal del botón */
+    /* La sombra rosa se empuja desde la derecha para mezclar los colores */
+    box-shadow: inset -100px 0 40px -20px var(--neon-pink), 
+                0 0 10px 100px var(--neon-purple) inset;
+    
+    color: white;
+    font-weight: 700;
+    -webkit-text-fill-color: white; /* Vital para Chromium */
+}
+
+/* 5. Hover (Al pasar el mouse) */
+select.form-control option:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--neon-pink);
+}
+
+/* 6. CORRECCIÓN FINAL: ELIMINACIÓN DEL FOCO BLANCO DEL SISTEMA */
+select.form-control:focus option:checked {
+    /* Mantenemos el efecto neón incluso cuando tiene el foco del teclado */
+    background-image: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+    box-shadow: inset -100px 0 40px -20px var(--neon-pink), 
+                0 0 10px 100px var(--neon-purple) inset;
+    outline: none;
 }
 
 /* card */
@@ -271,4 +309,23 @@ select.form-control option {
 /* Línea divisoria si llegaras a usarla */
 .dropdown-divider {
   border-top: 1px solid var(--glass-border);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    /* Usamos el color extraído de tu imagen (#2e244d) como fondo sólido */
+    -webkit-box-shadow: 0 0 0 1000px #2e244d inset !important;
+    
+    /* Forzamos el color del texto a blanco para que sea legible */
+    -webkit-text-fill-color: white !important;
+    
+    /* Truco técnico para mantener el color estable y evitar parpadeos */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Mantiene el estilo del grupo de input cuando está autocompletado */
+.custom-input-group:focus-within input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #2e244d inset !important;
 }
