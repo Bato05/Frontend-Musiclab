@@ -316,10 +316,10 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
     /* Usamos el color extraído de tu imagen (#2e244d) como fondo sólido */
-    -webkit-box-shadow: 0 0 0 1000px #2e244d inset !important;
+    -webkit-box-shadow: 0 0 0 1000px #2e244d inset;
     
     /* Forzamos el color del texto a blanco para que sea legible */
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: white;
     
     /* Truco técnico para mantener el color estable y evitar parpadeos */
     transition: background-color 5000s ease-in-out 0s;
@@ -327,53 +327,53 @@ input:-webkit-autofill:active {
 
 /* Mantiene el estilo del grupo de input cuando está autocompletado */
 .custom-input-group:focus-within input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #2e244d inset !important;
+    -webkit-box-shadow: 0 0 0 1000px #2e244d inset;
 }
 
-/* ==========================================================================
-   NAVBAR NEON-GLASSMORPHISM (HOME)
-   ========================================================================== */
-.navbar {
-  background: rgba(15, 5, 36, 0.7) !important; /* Fondo oscuro traslúcido */
-  backdrop-filter: blur(15px); /* Efecto de cristal esmerilado */
-  border-bottom: 1px solid var(--glass-border) !important;
-  padding: 0.8rem 2rem !important;
+/* barra de navegacion*/
+body nav.navbar.bg-body-tertiary {
+  background: rgba(15, 5, 36, 0.8) !important; /* Fondo oscuro traslúcido */
+  backdrop-filter: blur(12px);       /* Efecto cristal esmerilado */
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0.8rem 2rem;
   position: sticky;
   top: 0;
   z-index: 1050;
   transition: all 0.3s ease;
 }
 
-/* Marca y Enlaces Base */
-.navbar-brand {
-  font-weight: 800 !important;
+/* 2. Marca (MusicLab) con degradado de texto */
+body nav.navbar .navbar-brand {
+  color: white;
+  font-weight: 800;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, #fff, #ccc);
+  background: linear-gradient(135deg, #ffffff, #cccccc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.nav-link {
-  color: rgba(255, 255, 255, 0.7) !important;
+/* 3. Enlaces de Navegación */
+body nav.navbar .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.6); 
   font-weight: 500;
-  margin: 0 10px;
+  margin: 0 12px;
   position: relative;
   transition: 0.3s;
 }
 
-/* Efecto Hover en Enlaces */
-.nav-link:hover {
-  color: white !important;
+/* Hover: Iluminación en blanco */
+body nav.navbar .navbar-nav .nav-link:hover {
+  color: white;
 }
 
-/* Enlace Activo (Efecto Neón Rosa) */
-.nav-link.active {
-  color: var(--neon-pink) !important;
+/* 4. Estado Activo: Efecto Neón Rosa (Match con botones) */
+body nav.navbar .navbar-nav .nav-link.active {
+  color: var(--neon-pink);
   text-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255, 0, 128, 0.3);
 }
 
-/* Indicador de línea debajo del activo */
-.nav-link.active::after {
+/* Línea neón decorativa bajo el enlace activo */
+body nav.navbar .navbar-nav .nav-link.active::after {
   content: '';
   position: absolute;
   bottom: -5px;
@@ -384,16 +384,19 @@ input:-webkit-autofill:active {
   box-shadow: 0 0 10px var(--neon-pink);
 }
 
-/* Botón Log Out (Peligro pero con estilo) */
-.btn-outline-danger {
-  border: 1px solid rgba(220, 53, 69, 0.5) !important;
-  color: #ff4d4d !important;
-  border-radius: 12px !important;
+/* 5. Botón Log Out (Peligro refinado) */
+body nav.navbar .btn-outline-danger {
+  border: 1px solid rgba(220, 53, 69, 0.5);
+  color: #ff4d4d;
+  background: transparent;
+  border-radius: 12px;
+  padding: 6px 20px;
   transition: 0.3s;
 }
 
-.btn-outline-danger:hover {
-  background: rgba(220, 53, 69, 0.1) !important;
+body nav.navbar .btn-outline-danger:hover {
+  background: rgba(220, 53, 69, 0.1);
   box-shadow: 0 0 15px rgba(220, 53, 69, 0.4);
-  border-color: #ff4d4d !important;
+  border-color: #ff4d4d;
+  color: white;
 }
