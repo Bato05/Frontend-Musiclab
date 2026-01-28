@@ -39,7 +39,8 @@ export class Login {
     this.loginService.postLogin(this.formulario.value).subscribe({
       next: (res: any) => {
         this.formulario.reset(res);
-
+        // Se guardan los datos en LocalStorage antes de navegar
+        localStorage.setItem('user_session', JSON.stringify(res));
         // Si estamos seguros que el registro fue un correcto, ahi si cambiamos al siguiente componente...
         this.router.navigate(['/home']);
       },
