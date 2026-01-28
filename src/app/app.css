@@ -248,6 +248,25 @@ select.form-control:focus option:checked {
   margin: 1.5rem 0;
 }
 
+.card-date {
+  /* Usamos una fuente monoespaciada para darle un toque "digital" */
+  font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem; /* Un poco más grande para mejorar la lectura */
+  
+  /* Color Cyan Neón para máximo contraste sobre el fondo oscuro */
+  color: #00f2ff; 
+  
+  /* Eliminamos la opacidad baja para que el texto sea sólido */
+  opacity: 1; 
+  
+  margin-top: 5px;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+
+  /* Resplandor neón suave para que el texto "brille" en la oscuridad */
+  text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);
+}
+
 /* Botones dentro de la Card */
 .btn-outline-light {
   border: 1px solid var(--glass-border);

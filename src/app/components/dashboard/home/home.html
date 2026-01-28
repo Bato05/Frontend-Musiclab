@@ -26,7 +26,7 @@
         </li>
       </ul>
     </div>
-    <button type="button" class="btn btn-outline-danger">Log out</button>
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
   </div>
 </nav>
 
@@ -38,10 +38,12 @@
       <h6 class="card-subtitle mb-2 text-secondary">
           Artista: {{ p.artist_name }}
       </h6>
+      <p class="card-date">
+        published: {{ p.created_at | date:'yyyy/MM/dd HH:mm' }}
+      </p>
       <p class="card-text">{{ p.description }}</p>
       <div class="d-flex justify-content-center gap-2">
           <button class="btn btn-neon">Download</button>
-          <button class="btn btn-outline-light">Details</button>
       </div>
     </div>
   </div>
