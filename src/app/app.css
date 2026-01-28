@@ -329,3 +329,71 @@ input:-webkit-autofill:active {
 .custom-input-group:focus-within input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #2e244d inset !important;
 }
+
+/* ==========================================================================
+   NAVBAR NEON-GLASSMORPHISM (HOME)
+   ========================================================================== */
+.navbar {
+  background: rgba(15, 5, 36, 0.7) !important; /* Fondo oscuro traslúcido */
+  backdrop-filter: blur(15px); /* Efecto de cristal esmerilado */
+  border-bottom: 1px solid var(--glass-border) !important;
+  padding: 0.8rem 2rem !important;
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  transition: all 0.3s ease;
+}
+
+/* Marca y Enlaces Base */
+.navbar-brand {
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #fff, #ccc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 500;
+  margin: 0 10px;
+  position: relative;
+  transition: 0.3s;
+}
+
+/* Efecto Hover en Enlaces */
+.nav-link:hover {
+  color: white !important;
+}
+
+/* Enlace Activo (Efecto Neón Rosa) */
+.nav-link.active {
+  color: var(--neon-pink) !important;
+  text-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255, 0, 128, 0.3);
+}
+
+/* Indicador de línea debajo del activo */
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--neon-pink);
+  box-shadow: 0 0 10px var(--neon-pink);
+}
+
+/* Botón Log Out (Peligro pero con estilo) */
+.btn-outline-danger {
+  border: 1px solid rgba(220, 53, 69, 0.5) !important;
+  color: #ff4d4d !important;
+  border-radius: 12px !important;
+  transition: 0.3s;
+}
+
+.btn-outline-danger:hover {
+  background: rgba(220, 53, 69, 0.1) !important;
+  box-shadow: 0 0 15px rgba(220, 53, 69, 0.4);
+  border-color: #ff4d4d !important;
+}
