@@ -2,10 +2,12 @@ import { Routes } from '@angular/router';
 
 import { Login } from './components/forms/login/login';
 import { Register } from './components/forms/register/register';
+import { Home } from './components/dashboard/home/home';
 
 export const routes: Routes = [
     // Redirecciones...
     { path: '', redirectTo: 'login', pathMatch: 'full'},
     { path: 'login', component: Login},
     { path: 'register', component: Register},
+    { path: 'home', component: Home}
 ];

@@ -1,12 +1,12 @@
+// app.config.ts
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-
+import { provideHttpClient } from '@angular/common/http'; // Importación vital
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    HttpClient,
+    provideHttpClient(), // Habilita las peticiones a la API PHP
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes)
   ]

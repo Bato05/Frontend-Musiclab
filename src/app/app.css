@@ -48,7 +48,7 @@ body {
 }
 
 .btn.btn-outline-secondary.w-100.py-2.mb-4 {
-background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
   border: none;
   color: white;
   font-weight: 700;
@@ -92,6 +92,18 @@ background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
   transition: 0.3s;
 }
 
+input::placeholder {
+    font-family: "Font Awesome 5 Free", "Inter", sans-serif;
+    font-weight: 300;
+}
+
+#password_login::placeholder, 
+#password_register::placeholder, 
+#password_match::placeholder {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
 .custom-input-group:focus-within {
   border-color: var(--neon-purple);
   background: rgba(255, 255, 255, 0.12);
@@ -109,13 +121,13 @@ textarea.form-control {
     background-color: rgba(255, 255, 255, 0.07);
     border: 1px solid var(--glass-border);
     border-radius: 14px;
-    color: #ffffff; /* Forzamos blanco puro */
+    color: #ffffff; 
     padding: 12px;
     resize: none;
     transition: 0.3s;
 }
 
-/* Para asegurar que cuando escribas siga siendo blanco */
+/* Para asegurar que cuando siga siendo blanco */
 textarea.form-control:focus,
 textarea.form-control:active {
     color: #ffffff;
@@ -143,7 +155,120 @@ select.form-control:focus {
   outline: none;
 }
 
-/* OPTIONS → sin fondo forzado */
+/* OPTIONS => sin fondo forzado */
 select.form-control option {
   color: #ffffff;
+}
+
+/* card */
+.home-wrapper {
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+/* Estilo de la Card de Publicación */
+.home-wrapper .card {
+  background: var(--glass);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 700px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.home-wrapper .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(176, 0, 255, 0.2);
+  border-color: rgba(176, 0, 255, 0.4);
+}
+
+/* Títulos y Textos */
+.card-title {
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+  background: linear-gradient(to right, #fff, #ccc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.card-subtitle {
+  font-family: 'Monaco', monospace;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 1.5rem 0;
+}
+
+/* Botones dentro de la Card */
+.btn-outline-light {
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 8px 20px;
+  transition: 0.3s;
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+/* Navbar Adaptada al estilo */
+.navbar {
+  background: rgba(15, 5, 36, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1rem 2rem;
+  position: sticky; /* O fixed, según prefieras */
+  top: 0;
+  z-index: 1050; /* Valor estándar de Bootstrap para estar arriba */
+}
+
+.navbar-brand, .nav-link {
+  color: white;
+  font-weight: 500;
+}
+
+.nav-link.active {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+}
+
+/* Contenedor del menú desplegable */
+.dropdown-menu {
+  background: rgba(15, 5, 36, 0.95);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  z-index: 1100; /* Por encima de la navbar */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+}
+
+/* Items individuales dentro del menú */
+.dropdown-item {
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 8px 15px;
+  transition: 0.3s;
+}
+
+/* Efecto al pasar el mouse por las opciones */
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+}
+/* Línea divisoria si llegaras a usarla */
+.dropdown-divider {
+  border-top: 1px solid var(--glass-border);
 }

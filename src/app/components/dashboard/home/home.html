@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/home">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">My content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">upload content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Search artists</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Options
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <button type="button" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<!-- publicaciones de usuarios -->
+<div class="home-wrapper d-flex flex-column align-items-center">
+  <div class="card my-3" *ngFor="let p of posts">
+    <div class="card-body text-center">
+      <h5 class="card-title text-white">{{ p.title }}</h5>
+      <h6 class="card-subtitle mb-2 text-secondary">
+          Artista: {{ p.artist_name }}
+      </h6>
+      <p class="card-text">{{ p.description }}</p>
+      <div class="d-flex justify-content-center gap-2">
+          <button class="btn btn-neon">Download</button>
+          <button class="btn btn-outline-light">Details</button>
+      </div>
+    </div>
+  </div>
+</div>

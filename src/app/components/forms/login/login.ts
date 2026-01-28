@@ -38,13 +38,10 @@ export class Login {
   if (this.formulario.valid) {
     this.loginService.postLogin(this.formulario.value).subscribe({
       next: (res: any) => {
-        alert('¡Usuario logeado correctamente!');
         this.formulario.reset(res);
 
-        // TO-DO
-
         // Si estamos seguros que el registro fue un correcto, ahi si cambiamos al siguiente componente...
-        //this.router.navigate(['/login']);
+        this.router.navigate(['/home']);
       },
       error: (err: any) => {
         alert('Error en el logeo');
