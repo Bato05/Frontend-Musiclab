@@ -19,13 +19,13 @@ export class Home implements OnInit {
 
   ngOnInit(): void {
     this.getPostsService.getPosts().subscribe({
-      next: (res) => {
-        this.posts = res; 
-        this.cdr.detectChanges(); // <--- Fuerza el renderizado inmediato
-        console.log("Datos cargados automáticamente:", this.posts);
-      },
-      error: (err) => console.error("Error en la carga:", err)
-    });
+    next: (res) => {
+      this.posts = res; 
+      this.cdr.detectChanges(); // Aseguramos que la lista se refleje en la vista
+      console.log("Música cargada con éxito en la fortaleza.");
+    },
+    error: (err) => console.error("Error en la carga:", err)
+  });
   }
 
   logout(): void {
@@ -35,5 +35,19 @@ export class Home implements OnInit {
 
     // Redireccionamos al login
     this.router.navigate(['/login']);
+  }
+
+  // En app/components/dashboard/home/home.ts
+
+  ejecutarDescarga(post: any): void {
+    // Construimos la ruta directa a la materia física en XAMPP
+    const urlBase = 'http://localhost/phpMusicLab/uploads/';
+    const urlCompleta = urlBase + post.file_url;
+
+    console.log(`Abriendo recurso para descarga: ${post.title}`);
+
+    // Usamos la forma más directa y compatible: 
+    // Abre el archivo en una pestaña nueva, protegiendo tu sesión actual.
+    window.open(urlCompleta, '_blank');
   }
 }

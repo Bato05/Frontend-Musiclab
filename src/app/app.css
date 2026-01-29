@@ -419,3 +419,18 @@ body nav.navbar .btn-outline-danger:hover {
   border-color: #ff4d4d;
   color: white;
 }
+
+/* Personalización del reproductor de audio */
+.custom-audio {
+  filter: invert(100%) hue-rotate(180deg) brightness(1.5); /* Ajusta los colores al tema oscuro */
+  height: 40px;
+  border-radius: 20px;
+  opacity: 0.8;
+}
+
+.content-preview {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 16px;
+  border: 1px dashed var(--glass-border);
+}
