@@ -37,7 +37,32 @@ export class UploadContent {
   public selectedFile: File | null = null;
 
   onFileSelected(event: any): void {
-      this.selectedFile = event.target.files[0];
+      const file: File = event.target.files[0];
+    const tipoSeleccionado = this.formulario.get('file_type')?.value;
+
+    if (!file) {
+        this.selectedFile = null;
+        return;
+    }
+
+    // Definimos los formatos permitidos por categoría
+    const validaciones: { [key: string]: string[] } = {
+        'audio': ['audio/mpeg', 'audio/mp3'],
+        'score': ['application/pdf'],
+        'lyric': ['text/plain']
+    };
+
+    const formatosPermitidos = validaciones[tipoSeleccionado];
+
+    // Verificamos si la materia física coincide con la idea seleccionada
+    if (formatosPermitidos.includes(file.type)) {
+        this.selectedFile = file;
+    } else {
+        alert(`Error: Para ${tipoSeleccionado} debes subir un archivo ${formatosPermitidos.join(' o ')}`);
+        // Limpiamos el input para que el usuario deba elegir uno correcto
+        event.target.value = ''; 
+        this.selectedFile = null;
+    }
   }
 
   publicar(): void {

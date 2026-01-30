@@ -434,3 +434,31 @@ body nav.navbar .btn-outline-danger:hover {
   border-radius: 16px;
   border: 1px dashed var(--glass-border);
 }
+
+/* 1. Redondear el botón nativo "Choose File" */
+input[type="file"]::file-selector-button {
+  border-radius: 12px; /* Redondeado solicitado */
+  border: 1px solid var(--glass-border);
+  background-color: #e9ecef; /* Color gris suave por defecto */
+  padding: 0.5rem 1rem;
+  margin-right: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Efecto hover para el botón redondeado */
+input[type="file"]::file-selector-button:hover {
+  background-color: #dee2e6;
+  border-color: var(--neon-purple);
+}
+
+/* 2. Color de las letras "No file chosen" en negro cuando no hay selección */
+input[type="file"] {
+  color: #000000; /* Texto en negro solicitado */
+  font-weight: 500;
+}
+
+/* Opcional: Cambiar el color a neón cuando SI hay un archivo (para que destaque) */
+input[type="file"].file-selected {
+  color: var(--neon-purple);
+}
