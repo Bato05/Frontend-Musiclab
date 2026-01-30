@@ -1,0 +1,75 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/home">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" routerLink="/home">My content</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/upload">upload content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Search artists</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Options
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<!-- Formulario de creacion de publicaciones -->
+<div class="home-wrapper d-flex flex-column align-items-center mt-5">
+  <div class="auth-card p-5 w-100" style="max-width: 650px;">
+    <h2 class="card-title text-center mb-4">Share Your Creation</h2>
+    
+    <form [formGroup]="formulario">
+      <div class="text-start mb-3">
+        <label class="form-label small fw-bold text-light">Title of the work</label>
+        <div class="input-group custom-input-group">
+          <input type="text" class="form-control bg-transparent border-0 text-white" 
+                 placeholder="Title" formControlName="title" required autofocus>
+        </div>
+      </div>
+
+      <div class="text-start mb-3">
+        <label class="form-label small fw-bold text-light">Content Type</label>
+        <select class="form-control" formControlName="file_type" required>
+          <option value="audio">Audio (.MP3)</option>
+          <option value="score">Score (.PDF)</option>
+          <option value="lyric">Lyric (.Text)</option>
+        </select>
+      </div>
+
+      <div class="text-start mb-3">
+        <label class="form-label small fw-bold text-light">Description</label>
+        <textarea class="form-control" rows="4" 
+                  placeholder="Tell the community about the inspiration behind this work..." formControlName="description"></textarea>
+      </div>
+
+      <div class="text-start mb-4">
+        <label class="form-label small fw-bold text-light">Select your file</label>
+        <input type="file" (change)="onFileSelected($event)" class="form-control btn-outline-light">
+      </div>
+
+      <button type="button" [disabled]="formulario.invalid" (click)="publicar()" class="btn btn-neon w-100 py-3 mb-3">
+        Publish to MusicLab
+      </button>
+      <button type="reset" class="btn btn-outline-secondary w-100 py-2">
+        Clear fields
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,13 +1,15 @@
+// app/components/dashboard/home/home.ts
 import { Component, OnInit, inject, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { GetPosts } from '../../../services/getPosts';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; 
 
 @Component({
   selector: 'app-home',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule],
+  imports: [CommonModule, 
+            RouterLink], 
   templateUrl: './home.html',
   styleUrl: '../../../app.css',
 })
