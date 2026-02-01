@@ -73,6 +73,7 @@ export class UploadContent {
                   alert("¡Publicación realizada con éxito!");
                   this.formulario.reset();
                   this.selectedFile = null;
+                  this.router.navigate(['/home']);
               },
               error: (err: any) => alert("Error en la publicación")
           });

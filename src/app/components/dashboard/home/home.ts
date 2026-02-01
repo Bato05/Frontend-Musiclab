@@ -24,7 +24,7 @@ export class Home implements OnInit {
     next: (res) => {
       this.posts = res; 
       this.cdr.detectChanges(); // Aseguramos que la lista se refleje en la vista
-      console.log("Música cargada con éxito en la fortaleza.");
+      console.log("Las publicaciones cargaron con éxito.");
     },
     error: (err) => console.error("Error en la carga:", err)
   });
