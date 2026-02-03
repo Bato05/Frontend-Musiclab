@@ -16,11 +16,11 @@
           <a class="nav-link" routerLink="/search" routerLinkActive="active">Search artists</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Options
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" routerLink="/profile" routerLinkActive="active">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
           </ul>
         </li>
@@ -30,50 +30,57 @@
   </div>
 </nav>
 
-<!-- Formulario de creacion de publicaciones -->
 <div class="home-wrapper d-flex flex-column align-items-center mt-5">
   <div class="auth-card p-5 w-100" style="max-width: 650px;">
-    <h2 class="card-title text-center mb-4">Share Your Creation</h2>
+    <h2 class="card-title text-center mb-4 text-white">Share Your Creation</h2>
     
-    <form [formGroup]="formulario">
+    <form [formGroup]="uploadForm">
+      
       <div class="text-start mb-3">
         <label class="form-label small fw-bold text-light">Title of the work</label>
         <div class="input-group custom-input-group">
-          <input type="text" class="form-control bg-transparent border-0 text-white" 
+          <input type="text" class="form-control bg-transparent border-0 text-white shadow-none" 
                  placeholder="Title" formControlName="title" required autofocus>
         </div>
       </div>
 
       <div class="text-start mb-3">
         <label class="form-label small fw-bold text-light">Content Type</label>
-        <select class="form-control" formControlName="file_type" required>
-          <option value="audio">Audio (.MP3)</option>
-          <option value="score">Score (.PDF)</option>
-          <option value="lyric">Lyric (.Text)</option>
-        </select>
+        <div class="custom-input-group">
+            <select class="form-control bg-transparent border-0 text-white shadow-none" formControlName="file_type" required>
+                <option value="audio" class="bg-dark text-white">Audio (.MP3)</option>
+                <option value="score" class="bg-dark text-white">Score (.PDF)</option>
+                <option value="lyric" class="bg-dark text-white">Lyric (.Text)</option>
+            </select>
+        </div>
       </div>
 
       <div class="text-start mb-3">
         <label class="form-label small fw-bold text-light">Description</label>
-        <textarea class="form-control" rows="4" 
-                  placeholder="Tell the community about the inspiration..." formControlName="description"></textarea>
+        <div class="custom-input-group">
+            <textarea class="form-control bg-transparent border-0 text-white shadow-none" rows="4" 
+                    placeholder="Tell the community about the inspiration..." formControlName="description"></textarea>
+        </div>
       </div>
 
       <div class="text-start mb-4">
         <label class="form-label small fw-bold text-light">Select your file</label>
         <input type="file" 
                (change)="onFileSelected($event)" 
-               [accept]="formulario.get('file_type')?.value === 'audio' ? '.mp3' : 
-                         formulario.get('file_type')?.value === 'score' ? '.pdf' : '.txt'"
-               class="form-control btn-outline-light">
+               [accept]="uploadForm.get('file_type')?.value === 'audio' ? '.mp3' : 
+                         uploadForm.get('file_type')?.value === 'score' ? '.pdf' : '.txt'"
+               class="form-control bg-transparent text-white btn-outline-light border-secondary">
       </div>
 
-      <button type="button" [disabled]="formulario.invalid" (click)="publicar()" class="btn btn-neon w-100 py-3 mb-3">
-        Publish to MusicLab
+      <button type="button" [disabled]="uploadForm.invalid || loading" (click)="publicar()" class="btn btn-neon w-100 py-3 mb-3">
+        <span *ngIf="!loading">Publish to MusicLab</span>
+        <span *ngIf="loading">Uploading...</span>
       </button>
-      <button type="reset" class="btn btn-outline-secondary w-100 py-2">
+      
+      <button type="reset" class="btn btn-outline-secondary w-100 py-2 text-white border-secondary">
         Clear fields
       </button>
+
     </form>
   </div>
 </div>

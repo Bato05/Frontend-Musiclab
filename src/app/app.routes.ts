@@ -7,6 +7,7 @@ import { Home } from './components/dashboard/home/home';
 import { UploadContent } from './components/dashboard/uploadContent/uploadContent';
 import { UserContent } from './components/dashboard/userContent/userContent';
 import { SearchUsers } from './components/dashboard/searchUsers/searchUsers';
+import { Profile } from './components/dashboard/profile/profile';
 
 export const routes: Routes = [
     // Redirecciones...
@@ -24,5 +25,8 @@ export const routes: Routes = [
       canActivate: [authGuard]},
     { path: 'search', 
       component: SearchUsers,
+      canActivate: [authGuard]},
+    { path: 'profile', 
+      component: Profile,
       canActivate: [authGuard]}
 ];

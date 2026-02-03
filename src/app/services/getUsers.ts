@@ -3,15 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class GetUsers {
   private http = inject(HttpClient);
+  // Ajusta esta URL si tu carpeta no se llama "phpMusicLab"
+  private url = 'http://localhost/phpMusicLab/api/index.php?accion=users';
 
-  private apiUrl = 'http://localhost/phpMusicLab/api/index.php?accion=users';
+  constructor() { }
 
-  // al ser una peticion get no debe obtener datos de ningun formulario
+  // Obtener todos
   getUsers(): Observable<any> {
-    return this.http.get(this.apiUrl);
+    return this.http.get(this.url);
+  }
+
+  // Obtener uno solo por ID (Este es el que usa el Profile)
+  getUserById(id: number | string): Observable<any> {
+    return this.http.get(`${this.url}/${id}`);
   }
 }

@@ -16,11 +16,11 @@
           <a class="nav-link" routerLink="/search">Search artists</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Options
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" routerLink="/profile" routerLinkActive="active">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
           </ul>
         </li>
@@ -30,19 +30,18 @@
   </div>
 </nav>
 
-<!-- publicaciones de usuarios -->
 <div class="home-wrapper d-flex flex-column align-items-center">
   <div class="card my-3" *ngFor="let p of posts">
     <div class="card-body text-center">
       
       <div class="profile-img-container mb-3">
         <div class="profile-img-container mb-3">
-        <img [src]="p.profile_img_url === 'default_profile.png' 
-                    ? 'http://localhost/phpMusicLab/assets/default_profile.png' 
-                    : 'http://localhost/phpMusicLab/uploads/' + p.profile_img_url" 
-            alt="Profile Image" 
-            class="profile-img-post">
-      </div>
+          <img [src]="p.profile_img_url === 'default_profile.png' 
+                      ? 'http://localhost/phpMusicLab/assets/default_profile.png' 
+                      : 'http://localhost/phpMusicLab/uploads/' + p.profile_img_url" 
+              alt="Profile Image" 
+              class="profile-img-post">
+        </div>
       </div>
 
       <h5 class="card-title text-white">{{ p.title }}</h5>
@@ -55,9 +54,10 @@
       <p class="card-text">{{ p.description }}</p>
 
       <div class="content-preview mb-4">
+        
         <div *ngIf="p.file_type === 'audio'" class="audio-player">
-          <audio controls class="w-100 custom-audio">
-            <source [src]="'http://localhost/phpMusicLab/uploads/' + p.file_url" type="audio/mpeg">
+          <audio controls class="w-100 custom-audio" 
+                 [src]="'http://localhost/phpMusicLab/uploads/' + p.file_url">
             Tu navegador no soporta el reproductor de audio.
           </audio>
         </div>
@@ -66,6 +66,7 @@
           <i class="bi" [ngClass]="p.file_type === 'score' ? 'bi-file-pdf' : 'bi-file-text'" style="font-size: 2rem; color: var(--neon-pink);"></i>
           <p class="small text-secondary mt-2">{{ p.file_url }}</p>
         </div>
+
       </div>
 
       <div class="d-flex justify-content-center gap-3">
