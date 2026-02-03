@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router'; // Importar RouterLinkActive
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { GetPosts } from '../../../services/getPosts';
 import { DeletePosts } from '../../../services/deletePosts';
@@ -10,7 +10,7 @@ import { PatchPost } from '../../../services/patchPosts';
   selector: 'app-user-content',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ReactiveFormsModule], // Añadir RouterLinkActive aquí
   templateUrl: './userContent.html',
   styleUrl: '../../../app.css',
 })
@@ -18,7 +18,7 @@ export class UserContent implements OnInit {
   // --- Propiedades de Estado ---
   public posts: any[] = []; 
   public datosListos: boolean = false;
-  public versionId: number = Date.now(); // Control de caché para recarga de archivos
+  public versionId: number = Date.now(); 
   
   // --- Propiedades de Edición ---
   public formEdicion: FormGroup;
@@ -34,7 +34,6 @@ export class UserContent implements OnInit {
   private patchService = inject(PatchPost);
 
   constructor() {
-    // Inicialización del formulario reactivo para edición
     this.formEdicion = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.maxLength(200)]],
@@ -46,9 +45,6 @@ export class UserContent implements OnInit {
     this.cargarMisPublicaciones();
   }
 
-  /**
-   * Obtiene las publicaciones del usuario actual desde el servicio de lectura
-   */
   cargarMisPublicaciones() {
     this.datosListos = false;
     const sesionRaw = sessionStorage.getItem('user_session');
@@ -76,9 +72,6 @@ export class UserContent implements OnInit {
     }
   }
 
-  /**
-   * Captura el archivo seleccionado para reemplazar el existente
-   */
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
@@ -86,12 +79,9 @@ export class UserContent implements OnInit {
     }
   }
 
-  /**
-   * Activa el modo edición cargando los datos actuales en el formulario
-   */
   abrirEdicion(post: any) {
     this.editandoId = post.id;
-    this.selectedFile = null; // Resetear selección previa
+    this.selectedFile = null; 
     this.formEdicion.patchValue({
       title: post.title,
       description: post.description,
@@ -100,14 +90,10 @@ export class UserContent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /**
-   * Envía los cambios al backend, incluyendo el archivo en Base64 si existe
-   */
   async guardarCambios() {
     if (this.formEdicion.valid && this.editandoId) {
       const datosParaEnviar: any = { ...this.formEdicion.value };
 
-      // Si hay un archivo nuevo, se procesa para el backend
       if (this.selectedFile) {
         datosParaEnviar.file_url = this.selectedFile.name;
         datosParaEnviar.file_data = await this.convertFileToBase64(this.selectedFile);
@@ -131,9 +117,6 @@ export class UserContent implements OnInit {
     this.formEdicion.reset();
   }
 
-  /**
-   * Elimina una publicación usando el servicio de borrado refactorizado
-   */
   borrarPublicacion(id: number, titulo: string) {
     if (confirm(`¿Estás seguro de que quieres eliminar "${titulo}"?`)) {
       this.deleteService.deletePost(id).subscribe({
@@ -146,9 +129,6 @@ export class UserContent implements OnInit {
     }
   }
 
-  /**
-   * Convierte un objeto File a una cadena Base64 (requerido por el backend PATCH)
-   */
   private convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

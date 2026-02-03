@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class GetUsers {
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost/phpMusicLab/api/index.php?accion=posts';
+  private apiUrl = 'http://localhost/phpMusicLab/api/index.php?accion=users';
 
   // al ser una peticion get no debe obtener datos de ningun formulario
   getUsers(): Observable<any> {
