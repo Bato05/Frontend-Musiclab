@@ -5,7 +5,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router); 
   
   // ¿Sigue encendida la vela de la sesión?
-  const sesion = sessionStorage.getItem('user_session');
+  const sesion = localStorage.getItem('user_session');
 
   if (sesion) {
     // Si hay sesión, el paso es lícito
