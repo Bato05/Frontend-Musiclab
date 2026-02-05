@@ -90,7 +90,7 @@ export class Settings implements OnInit {
   updateSettings() {
     if (this.settingsForm.valid && this.hasChanges()) {
       this.loading = true;
-      const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+      const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
       const userId = sesion.user?.id;
 
       const payload: any = {};
@@ -126,7 +126,7 @@ export class Settings implements OnInit {
   deleteAccount() {
     if (confirm('⚠️ WARNING: Are you sure you want to delete your account? This action cannot be undone.')) {
       this.deleting = true;
-      const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+      const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
       const userId = sesion.user?.id;
 
       this.deleteUsersService.deleteUser(userId).subscribe({
@@ -152,7 +152,6 @@ export class Settings implements OnInit {
   }
 
   logout(): void {
-    sessionStorage.clear();
     localStorage.clear();
     this.router.navigate(['/login']);
   }

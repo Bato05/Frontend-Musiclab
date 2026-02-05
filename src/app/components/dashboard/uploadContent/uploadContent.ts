@@ -110,7 +110,6 @@ export class UploadContent {
 
   logout(): void {
     localStorage.clear(); 
-    sessionStorage.clear();
     this.router.navigate(['/login']);
   }
 }

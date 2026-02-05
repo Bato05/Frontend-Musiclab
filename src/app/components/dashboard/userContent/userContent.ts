@@ -142,7 +142,6 @@ export class UserContent implements OnInit {
   }
 
   logout(): void {
-    sessionStorage.clear();
     localStorage.clear();
     this.router.navigate(['/login']);
   }

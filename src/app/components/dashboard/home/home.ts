@@ -30,7 +30,6 @@ export class Home implements OnInit {
 
   logout(): void {
     localStorage.clear(); 
-    sessionStorage.clear();
     this.router.navigate(['/login']);
   }
 
