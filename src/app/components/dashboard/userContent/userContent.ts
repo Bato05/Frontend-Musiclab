@@ -47,7 +47,7 @@ export class UserContent implements OnInit {
 
   cargarMisPublicaciones() {
     this.datosListos = false;
-    const sesionRaw = sessionStorage.getItem('user_session');
+    const sesionRaw = localStorage.getItem('user_session');
     
     if (sesionRaw) {
       const sesion = JSON.parse(sesionRaw);

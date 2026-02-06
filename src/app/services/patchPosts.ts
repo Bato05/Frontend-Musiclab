@@ -11,7 +11,7 @@ export class PatchPost {
 
   // Edita una publicación existente
   patchPost(postId: number | string, datos: any): Observable<any> {
-    const sesionRaw = sessionStorage.getItem('user_session');
+    const sesionRaw = localStorage.getItem('user_session');
     const sesion = sesionRaw ? JSON.parse(sesionRaw) : null;
     const token = sesion?.token;
 

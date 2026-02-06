@@ -46,7 +46,7 @@ export class Profile implements OnInit {
   }
 
   cargarDatosUsuario() {
-    const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     const userId = sesion.user?.id;
 
     if (userId) {
@@ -118,7 +118,7 @@ export class Profile implements OnInit {
   updateProfile() {
     if (this.profileForm.valid && this.hasChanges()) {
       this.loading = true;
-      const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+      const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
       const userId = sesion.user?.id;
 
       const payload: any = { ...this.profileForm.value };
@@ -134,7 +134,7 @@ export class Profile implements OnInit {
           
           sesion.user = { ...sesion.user, ...payload };
           if (res.new_img) sesion.user.profile_img_url = res.new_img;
-          sessionStorage.setItem('user_session', JSON.stringify(sesion));
+          localStorage.setItem('user_session', JSON.stringify(sesion));
 
           this.loading = false;
           window.location.reload(); 

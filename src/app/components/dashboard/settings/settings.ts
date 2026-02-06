@@ -53,7 +53,7 @@ export class Settings implements OnInit {
   }
 
   cargarDatosUsuario() {
-    const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     const userId = sesion.user?.id;
 
     if (userId) {
@@ -110,7 +110,7 @@ export class Settings implements OnInit {
           alert('Account settings updated successfully!');
           
           if (payload.email) sesion.user.email = payload.email;
-          sessionStorage.setItem('user_session', JSON.stringify(sesion));
+          localStorage.setItem('user_session', JSON.stringify(sesion));
           
           window.location.reload();
         },

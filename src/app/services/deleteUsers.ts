@@ -10,7 +10,7 @@ export class DeleteUsers {
   private url = 'http://localhost/phpMusicLab/api/index.php?accion=users';
 
   deleteUser(id: number | string): Observable<any> {
-    const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     const token = sesion.token;
 
     const headers = {

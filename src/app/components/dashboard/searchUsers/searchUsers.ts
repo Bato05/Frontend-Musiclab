@@ -24,7 +24,7 @@ export class SearchUsers implements OnInit {
 
   public categories: string[] = [
     'All', 'Vocalist', 'Guitarist', 'Bassist', 'Drummer', 
-    'Pianist', 'Violinist', 'Saxophonist', 'Trumpeter', 'DJ', 'Other'
+    'Pianist', 'Violinist', 'Saxophonist', 'Trumpeter', 'DJ', 'Another'
   ];
 
   // --- Inyecciones ---

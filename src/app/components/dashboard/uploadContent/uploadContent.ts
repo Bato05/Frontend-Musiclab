@@ -79,7 +79,7 @@ export class UploadContent {
           this.loading = true;
           
           // Recuperamos el ID del usuario de la sesión
-          const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+          const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
           
           // Construimos el JSON Payload exacto que espera el nuevo PHP
           const payload = {

@@ -14,7 +14,7 @@ export class PatchUsers {
 
   patchUsers(userData: any, id: number | string): Observable<any> {
     // Obtenemos el token para la autorización
-    const sesion = JSON.parse(sessionStorage.getItem('user_session') || '{}');
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     const token = sesion.token;
 
     // Angular envía JSON por defecto, así que solo pasamos el objeto 'userData'
