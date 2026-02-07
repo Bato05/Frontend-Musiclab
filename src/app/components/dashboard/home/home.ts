@@ -20,9 +20,9 @@ export class Home implements OnInit {
   ngOnInit(): void {
     this.getPostsService.getPosts().subscribe({
       next: (res) => {
-        this.posts = res; 
+        // FILTRO: Solo guardamos las publicaciones cuya visibilidad sea 'public'
+        this.posts = res.filter((p: any) => p.visibility === 'public');
         this.cdr.detectChanges(); // Fuerza la actualización de la vista
-        console.log("Las publicaciones cargaron con éxito.");
       },
       error: (err) => console.error("Error en la carga:", err)
     });
