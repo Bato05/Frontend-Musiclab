@@ -9,6 +9,7 @@ import { UserContent } from './components/dashboard/userContent/userContent';
 import { SearchUsers } from './components/dashboard/searchUsers/searchUsers';
 import { Profile } from './components/dashboard/profile/profile';
 import { Settings } from './components/dashboard/settings/settings';
+import { FollowingList } from './components/dashboard/followingList/followingList';
 
 export const routes: Routes = [
     // Redirecciones...
@@ -32,5 +33,8 @@ export const routes: Routes = [
       canActivate: [authGuard]},
     { path: 'settings', 
       component: Settings,
-      canActivate: [authGuard]}
+      canActivate: [authGuard]},
+    { path: 'following', 
+      component: FollowingList, 
+      canActivate: [authGuard] }
 ];

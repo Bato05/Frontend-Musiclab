@@ -13,7 +13,7 @@
           <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Options</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item active" routerLink="/profile">Profile</a></li>
-            <li><a class="dropdown-item active" routerLink="/settings">Settings</a></li>
+            <li><a class="dropdown-item" routerLink="/settings">Settings</a></li>
           </ul>
         </li>
       </ul>
@@ -22,13 +22,22 @@
   </div>
 </nav>
 
-<div class="home-wrapper d-flex flex-column align-items-center mt-5">
+<div class="home-wrapper d-flex flex-column align-items-center mt-5 pt-4 min-vh-100 pb-5">
   <div class="auth-card p-5 w-100" style="max-width: 700px;">
     
     <div class="text-center mb-4">
       <h2 class="text-white fw-bold">Edit Profile</h2>
       <p class="text-secondary small">Update your public information</p>
     </div>
+
+    <div class="d-grid gap-2 mb-5">
+      <p class="text-secondary small text-center mb-1">Manage your connections</p>
+      <button type="button" routerLink="/following" class="btn btn-info py-2 rounded-pill fw-bold text-dark">
+        <i class="bi bi-people-fill me-2"></i> See Following
+      </button>
+    </div>
+
+    <hr class="border-secondary mb-5 opacity-50">
 
     <div class="d-flex justify-content-center mb-4 position-relative">
       <div class="profile-img-container" style="width: 120px; height: 120px;">
@@ -42,7 +51,7 @@
         <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
       </label>
     </div>
-    
+
     <form [formGroup]="profileForm">
       
       <div class="row">
