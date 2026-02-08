@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router'; 
 import { Validators, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UploadService } from '../../../services/uploadService';
-import { FollowService } from '../../../services/followService'; // Cambiado por FollowService
+import { FollowService } from '../../../services/followService';
 
 @Component({
   selector: 'app-upload-content', 
@@ -18,17 +18,17 @@ import { FollowService } from '../../../services/followService'; // Cambiado por
 export class UploadContent implements OnInit {
   
   public uploadForm: FormGroup;
-  public usersList: any[] = []; // Ahora contendrá solo a los usuarios que sigues
+  public usersList: any[] = []; // Lista de usuarios seguidos
   public loading: boolean = false;
   
-  // Variables para manejar la conversión a Base64
+  // Variables para manejar el archivo
   private fileBase64: string = '';
   public fileName: string = ''; 
 
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private uploadService = inject(UploadService);
-  private followService = inject(FollowService); // Inyectamos el servicio de seguimiento
+  private followService = inject(FollowService);
 
   constructor() {
     this.uploadForm = this.fb.group({
@@ -36,6 +36,7 @@ export class UploadContent implements OnInit {
       file_type: ['audio', [Validators.required]],                
       description: ['', [Validators.maxLength(200)]],
       visibility: ['public', Validators.required], 
+      // VOLVEMOS A NULL: Selección única
       destination_id: [null] 
     });
   }
@@ -49,10 +50,9 @@ export class UploadContent implements OnInit {
     const miId = sesion.user?.id;
 
     if (miId) {
-      // Obtenemos solo los usuarios que el usuario actual sigue
       this.followService.getFollowing(miId).subscribe({
         next: (res: any) => {
-          // Según tu API, la lista viene dentro de la propiedad 'following'
+          // Asumiendo que tu API devuelve { following: [...] }
           this.usersList = res.following || [];
         },
         error: (err) => console.error("Error al obtener seguidos", err)
@@ -60,7 +60,6 @@ export class UploadContent implements OnInit {
     }
   }
 
-  // Maneja la selección del archivo y convierte a Base64
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -75,14 +74,13 @@ export class UploadContent implements OnInit {
     }
   }
 
-  // Publicar contenido
   publicar(): void {
     if (this.uploadForm.valid && this.fileBase64) {
       const val = this.uploadForm.value;
 
-      // Validación: si es followers, el destino es obligatorio
+      // Validación simple para selección única
       if (val.visibility === 'followers' && !val.destination_id) {
-        alert("Debes seleccionar a un seguido de la lista para esta visibilidad.");
+        alert("Debes seleccionar un destinatario para esta visibilidad.");
         return;
       }
 
@@ -97,7 +95,8 @@ export class UploadContent implements OnInit {
         file_name: this.fileName,
         file_data: this.fileBase64,
         visibility: val.visibility,
-        destination_id: val.destination_id
+        // Enviamos el ID directo (INT o NULL), nada de arrays ni strings
+        destination_id: val.destination_id 
       };
 
       this.uploadService.postPosts(payload).subscribe({

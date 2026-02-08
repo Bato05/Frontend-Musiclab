@@ -1,147 +1,178 @@
 import { Component, OnInit, inject, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router'; // Importar RouterLinkActive
+import { Router, RouterLink, RouterLinkActive } from '@angular/router'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { GetPosts } from '../../../services/getPosts';
 import { DeletePosts } from '../../../services/deletePosts';
 import { PatchPost } from '../../../services/patchPosts';
+import { FollowService } from '../../../services/followService';
 
 @Component({
   selector: 'app-user-content',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, RouterLink, RouterLinkActive, ReactiveFormsModule], // Añadir RouterLinkActive aquí
+  imports: [CommonModule, RouterLink, RouterLinkActive, ReactiveFormsModule],
   templateUrl: './userContent.html',
   styleUrl: '../../../app.css',
 })
 export class UserContent implements OnInit {
-  // --- Propiedades de Estado ---
-  public posts: any[] = []; 
+  public posts: any[] = [];
+  public followedUsers: any[] = [];
   public datosListos: boolean = false;
-  public versionId: number = Date.now(); 
-  
-  // --- Propiedades de Edición ---
-  public formEdicion: FormGroup;
   public editandoId: number | null = null;
   public selectedFile: File | null = null;
+  public formEdicion: FormGroup;
 
-  // --- Inyección de Dependencias ---
-  private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
   private postsService = inject(GetPosts);
-  private deleteService = inject(DeletePosts);
   private patchService = inject(PatchPost);
+  private deleteService = inject(DeletePosts);
+  private followService = inject(FollowService);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   constructor() {
     this.formEdicion = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.maxLength(200)]],
-      file_type: ['audio']
+      file_type: ['audio'],
+      visibility: ['public', Validators.required],
+      destination_id: [null] // Destinatario único
     });
   }
 
   ngOnInit(): void {
     this.cargarMisPublicaciones();
+    this.cargarMisSeguidos();
   }
 
   cargarMisPublicaciones() {
     this.datosListos = false;
-    const sesionRaw = localStorage.getItem('user_session');
-    
-    if (sesionRaw) {
-      const sesion = JSON.parse(sesionRaw);
-      const userId = sesion.user?.id || sesion.id;
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    const userId = sesion.user?.id || sesion.id;
 
-      if (userId) {
-        this.postsService.getUserPosts(userId).subscribe({
-          next: (res: any) => {
-            this.posts = Array.isArray(res) ? res : [];
-            this.versionId = Date.now(); 
-            this.datosListos = true;
-            this.cdr.detectChanges();
-          },
-          error: (err) => {
-            console.error("Error al cargar posts:", err);
-            this.datosListos = true;
-          }
-        });
-      }
-    } else {
+    if (!userId) {
       this.router.navigate(['/login']);
+      return;
     }
+
+    this.postsService.getUserPosts(userId).subscribe({
+      next: (res: any) => {
+        this.posts = Array.isArray(res) ? res : [];
+        this.datosListos = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error("Error al cargar posts", err)
+    });
   }
 
-  onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
+  cargarMisSeguidos() {
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    const miId = sesion.user?.id || sesion.id;
+    if (miId) {
+      this.followService.getFollowing(miId).subscribe({
+        next: (res: any) => this.followedUsers = res.following || [],
+        error: (err) => console.error("Error cargando seguidos", err)
+      });
     }
   }
 
   abrirEdicion(post: any) {
     this.editandoId = post.id;
-    this.selectedFile = null; 
+    this.selectedFile = null;
     this.formEdicion.patchValue({
       title: post.title,
       description: post.description,
-      file_type: post.file_type
+      file_type: post.file_type,
+      visibility: post.visibility || 'public',
+      destination_id: post.destination_id
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  async guardarCambios() {
-    if (this.formEdicion.valid && this.editandoId) {
-      const datosParaEnviar: any = { ...this.formEdicion.value };
-
-      if (this.selectedFile) {
-        datosParaEnviar.file_url = this.selectedFile.name;
-        datosParaEnviar.file_data = await this.convertFileToBase64(this.selectedFile);
-      }
-
-      this.patchService.patchPost(this.editandoId, datosParaEnviar).subscribe({
-        next: () => {
-          alert("¡Publicación actualizada correctamente!");
-          this.editandoId = null;
-          this.selectedFile = null;
-          this.cargarMisPublicaciones();
-        },
-        error: (err) => alert("Error al actualizar la publicación")
-      });
-    }
   }
 
   cancelarEdicion() {
     this.editandoId = null;
     this.selectedFile = null;
-    this.formEdicion.reset();
+    this.formEdicion.reset({ visibility: 'public', file_type: 'audio' });
   }
 
-  borrarPublicacion(id: number, titulo: string) {
-    if (confirm(`¿Estás seguro de que quieres eliminar "${titulo}"?`)) {
-      this.deleteService.deletePost(id).subscribe({
-        next: () => {
-          alert('Publicación eliminada correctamente.');
-          this.cargarMisPublicaciones(); 
-        },
-        error: (err) => alert('No se pudo eliminar la publicación.')
-      });
-    }
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) this.selectedFile = file;
   }
+
+  guardarCambios() {
+  if (this.formEdicion.invalid || !this.editandoId) return;
+
+  const formVal = this.formEdicion.value;
+  const payload: any = { 
+    title: formVal.title,
+    description: formVal.description,
+    file_type: formVal.file_type,
+    visibility: formVal.visibility,
+    destination_id: formVal.destination_id
+  };
+
+  // Si hay un archivo, primero lo convertimos y en el callback enviamos
+  if (this.selectedFile) {
+    const reader = new FileReader();
+    reader.readAsDataURL(this.selectedFile);
+    
+    reader.onload = () => {
+      // Una vez cargado el archivo, preparamos el payload con la data
+      payload.file_name = this.selectedFile?.name;
+      payload.file_data = (reader.result as string).split(',')[1];
+      
+      // Enviamos la petición dentro del evento onload
+      this.ejecutarPeticionPatch(payload);
+    };
+    
+    reader.onerror = (error) => {
+      console.error("Error al leer el archivo", error);
+    };
+  } else {
+    // Si no hay archivo nuevo, enviamos directamente
+    this.ejecutarPeticionPatch(payload);
+  }
+}
+
+// Función auxiliar para no repetir código
+private ejecutarPeticionPatch(payload: any) {
+  this.patchService.patchPosts(this.editandoId!, payload).subscribe({
+    next: (res: any) => {
+      if (res.status === 'success') {
+        alert("¡Publicación actualizada correctamente!");
+        this.editandoId = null;
+        this.selectedFile = null;
+        this.cargarMisPublicaciones();
+        
+        // Forzamos la detección de cambios para que la lista se refresque
+        this.cdr.detectChanges();
+      }
+    },
+    error: (err) => {
+      console.error("Error al actualizar", err);
+      alert("No se pudo actualizar la publicación");
+    }
+  });
+}
 
   private convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = (reader.result as string).split(',')[1];
-        resolve(base64String);
-      };
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
       reader.onerror = error => reject(error);
     });
   }
 
-  logout(): void {
+  borrarPublicacion(id: number, titulo: string) {
+    if (confirm(`¿Eliminar "${titulo}"?`)) {
+      this.deleteService.deletePost(id).subscribe(() => this.cargarMisPublicaciones());
+    }
+  }
+
+  logout() {
     localStorage.clear();
     this.router.navigate(['/login']);
   }

@@ -21,7 +21,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" routerLink="/profile" routerLinkActive="active">Profile</a></li>
-            <li><a class="dropdown-item active" routerLink="/settings">Settings</a></li>
+            <li><a class="dropdown-item" routerLink="/settings" routerLinkActive="active">Settings</a></li>
           </ul>
         </li>
       </ul>
@@ -35,26 +35,45 @@
   <div *ngIf="editandoId" class="auth-card p-4 mb-5 w-100" style="max-width: 650px;">
     <h4 class="text-white text-center mb-4">Edit Publication</h4>
     <form [formGroup]="formEdicion">
+      
       <div class="mb-3 text-start">
         <label class="form-label small text-light fw-bold">Title</label>
-        <div class="custom-input-group">
-           <input type="text" class="form-control bg-transparent border-0" formControlName="title">
+        <div class="custom-input-group border-bottom border-secondary">
+           <input type="text" class="form-control bg-transparent border-0 text-white shadow-none" formControlName="title">
+        </div>
+      </div>
+
+      <div class="mb-3 text-start">
+        <label class="form-label small text-light fw-bold">Visibility</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <select formControlName="visibility" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option value="public" class="bg-dark">Public (Everyone)</option>
+            <option value="followers" class="bg-dark">Followers (Specific Artist)</option>
+            <option value="private" class="bg-dark">Private (Only Me)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3 text-start" *ngIf="formEdicion.get('visibility')?.value === 'followers'">
+        <label class="form-label small text-info fw-bold">Update Destination Artist</label>
+        <div class="custom-input-group border border-info rounded p-2">
+          <select formControlName="destination_id" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option [value]="null" class="bg-dark">-- Select a follower --</option>
+            <option *ngFor="let user of followedUsers" [value]="user.id" class="bg-dark">
+              {{ user.first_name }} {{ user.last_name }}
+            </option>
+          </select>
         </div>
       </div>
 
       <div class="mb-3 text-start">
         <label class="form-label small text-light fw-bold">Description</label>
-        <textarea class="form-control" rows="3" formControlName="description"></textarea>
+        <textarea class="form-control bg-transparent border-secondary text-white" rows="3" formControlName="description"></textarea>
       </div>
 
       <div class="text-start mb-4">
         <label class="form-label small text-light fw-bold">Replace file (Optional)</label>
-        <input type="file" 
-               (change)="onFileSelected($event)" 
-               [accept]="formEdicion.get('file_type')?.value === 'audio' ? '.mp3' : 
-                         formEdicion.get('file_type')?.value === 'score' ? '.pdf' : '.txt'"
-               class="form-control btn-outline-light">
-        <p class="x-small text-secondary mt-1">Leave empty to keep the current file.</p>
+        <input type="file" (change)="onFileSelected($event)" class="form-control btn-outline-light">
       </div>
 
       <div class="d-flex gap-2 mt-4">
@@ -72,6 +91,20 @@
     
     <div class="card my-3" *ngFor="let p of posts">
       <div class="card-body text-center">
+        <div class="mb-2">
+          <span class="badge" [ngClass]="{
+            'bg-success': p.visibility === 'public',
+            'bg-info text-dark': p.visibility === 'followers',
+            'bg-secondary': p.visibility === 'private'
+          }">
+            <i class="bi" [ngClass]="{
+              'bi-globe': p.visibility === 'public',
+              'bi-people-fill': p.visibility === 'followers',
+              'bi-lock-fill': p.visibility === 'private'
+            }"></i> {{ p.visibility | uppercase }}
+          </span>
+        </div>
+
         <h5 class="card-title text-white">{{ p.title }}</h5>
         <p class="card-date">published: {{ p.created_at | date:'yyyy/MM/dd HH:mm' }}</p>
         <p class="card-text text-secondary">{{ p.description }}</p>
@@ -79,8 +112,7 @@
         <div class="content-preview mb-4">
           <div *ngIf="p.file_type === 'audio'" class="audio-player">
             <audio controls preload="auto" class="w-100 custom-audio">
-              <source [src]="'http://localhost/phpMusicLab/uploads/' + p.file_url + '?v=' + versionId" type="audio/mpeg">
-              Tu navegador no soporta el reproductor de audio.
+              <source [src]="'http://localhost/phpMusicLab/uploads/' + p.file_url" type="audio/mpeg">
             </audio>
           </div>
 
@@ -95,17 +127,11 @@
            <button type="button" (click)="abrirEdicion(p)" class="btn btn-outline-secondary px-4">
                <i class="bi bi-pencil-square me-2"></i>Edit
            </button>
-           
            <button type="button" (click)="borrarPublicacion(p.id, p.title)" class="btn btn-outline-danger px-4">
                <i class="bi bi-trash me-2"></i>Delete
            </button>
         </div>
       </div>
-    </div>
-
-    <div *ngIf="posts.length === 0" class="text-center mt-5">
-      <p class="text-secondary">You haven't uploaded anything yet.</p>
-      <a routerLink="/upload" class="btn btn-neon">Start Creating</a>
     </div>
   </div>
 
