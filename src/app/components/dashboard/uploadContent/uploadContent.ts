@@ -1,111 +1,120 @@
-import { Component, inject, ViewEncapsulation } from '@angular/core';
+import { Component, inject, ViewEncapsulation, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
-import { Router, RouterLink, RouterLinkActive } from '@angular/router'; 
+import { Router, RouterLink } from '@angular/router'; 
 import { Validators, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UploadService } from '../../../services/uploadService';
+import { FollowService } from '../../../services/followService'; // Cambiado por FollowService
 
 @Component({
   selector: 'app-upload-content', 
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, RouterLink, RouterLinkActive, ReactiveFormsModule], 
+  imports: [CommonModule, 
+            RouterLink, 
+            ReactiveFormsModule], 
   templateUrl: './uploadContent.html', 
   styleUrl: '../../../app.css',
 })
-export class UploadContent {
+export class UploadContent implements OnInit {
   
   public uploadForm: FormGroup;
+  public usersList: any[] = []; // Ahora contendrá solo a los usuarios que sigues
   public loading: boolean = false;
   
   // Variables para manejar la conversión a Base64
   private fileBase64: string = '';
-  private fileName: string = '';
+  public fileName: string = ''; 
 
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private uploadService = inject(UploadService);
+  private followService = inject(FollowService); // Inyectamos el servicio de seguimiento
 
   constructor() {
     this.uploadForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]], 
       file_type: ['audio', [Validators.required]],                
       description: ['', [Validators.maxLength(200)]],
-      // Agregamos el control del archivo (aunque lo manejamos con evento change) para validación
-      file: [null]           
+      visibility: ['public', Validators.required], 
+      destination_id: [null] 
     });
   }
 
-  // Método para manejar la selección del archivo y convertirlo a Base64
-  onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
-    const tipoSeleccionado = this.uploadForm.get('file_type')?.value;
+  ngOnInit() {
+    this.cargarSeguidos();
+  }
 
-    if (file) {
-        // 1. Validar tipo de archivo (Frontend check)
-        const validaciones: { [key: string]: string[] } = {
-            'audio': ['audio/mpeg', 'audio/mp3'],
-            'score': ['application/pdf'],
-            'lyric': ['text/plain']
-        };
+  cargarSeguidos() {
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    const miId = sesion.user?.id;
 
-        const formatosPermitidos = validaciones[tipoSeleccionado] || [];
-        
-        // Nota: A veces el tipo MIME puede variar, esto es una validación básica
-        // Si quieres ser permisivo, puedes quitar este if, pero ayuda a la UX.
-        if (formatosPermitidos.length > 0 && !formatosPermitidos.includes(file.type) && file.type !== '') {
-             alert(`Advertencia: El tipo de archivo parece no coincidir con ${tipoSeleccionado}.`);
-        }
-
-        this.fileName = file.name;
-
-        // 2. Convertir a Base64 usando FileReader
-        const reader = new FileReader();
-        reader.onload = () => {
-            // El resultado incluye "data:audio/mp3;base64,...", lo mandamos así, 
-            // el backend (tu función guardarBase64) ya sabe limpiarlo.
-            this.fileBase64 = reader.result as string;
-        };
-        reader.readAsDataURL(file);
-
-    } else {
-        this.fileBase64 = '';
-        this.fileName = '';
+    if (miId) {
+      // Obtenemos solo los usuarios que el usuario actual sigue
+      this.followService.getFollowing(miId).subscribe({
+        next: (res: any) => {
+          // Según tu API, la lista viene dentro de la propiedad 'following'
+          this.usersList = res.following || [];
+        },
+        error: (err) => console.error("Error al obtener seguidos", err)
+      });
     }
   }
 
-  publicar(): void {
-      // Verificamos que el formulario sea válido y que tengamos el string Base64 del archivo
-      if (this.uploadForm.valid && this.fileBase64) {
-          this.loading = true;
-          
-          // Recuperamos el ID del usuario de la sesión
-          const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
-          
-          // Construimos el JSON Payload exacto que espera el nuevo PHP
-          const payload = {
-              user_id: sesion.user?.id, // Asegúrate de que tu objeto sesión tenga user.id
-              title: this.uploadForm.value.title,
-              description: this.uploadForm.value.description,
-              file_type: this.uploadForm.value.file_type,
-              file_name: this.fileName,
-              file_data: this.fileBase64
-          };
+  // Maneja la selección del archivo y convierte a Base64
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.fileName = file.name;
+      const reader = new FileReader();
+      
+      reader.onload = () => {
+        this.fileBase64 = reader.result as string;
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  }
 
-          this.uploadService.postPosts(payload).subscribe({
-              next: (res: any) => {
-                  alert("¡Publicación realizada con éxito!");
-                  this.loading = false;
-                  this.router.navigate(['/home']);
-              },
-              error: (err: any) => {
-                  console.error(err);
-                  alert("Error en la publicación. Verifica el tamaño del archivo.");
-                  this.loading = false;
-              }
-          });
-      } else {
-          alert("Por favor completa todos los campos y selecciona un archivo.");
+  // Publicar contenido
+  publicar(): void {
+    if (this.uploadForm.valid && this.fileBase64) {
+      const val = this.uploadForm.value;
+
+      // Validación: si es followers, el destino es obligatorio
+      if (val.visibility === 'followers' && !val.destination_id) {
+        alert("Debes seleccionar a un seguido de la lista para esta visibilidad.");
+        return;
       }
+
+      this.loading = true;
+      const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+      
+      const payload = {
+        user_id: sesion.user?.id, 
+        title: val.title,
+        description: val.description,
+        file_type: val.file_type,
+        file_name: this.fileName,
+        file_data: this.fileBase64,
+        visibility: val.visibility,
+        destination_id: val.destination_id
+      };
+
+      this.uploadService.postPosts(payload).subscribe({
+        next: (res: any) => {
+          alert("¡Publicación realizada con éxito!");
+          this.loading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (err: any) => {
+          console.error(err);
+          alert("Error en la publicación. Revisa el tamaño del archivo.");
+          this.loading = false;
+        }
+      });
+    } else {
+      alert("Por favor completa todos los campos y selecciona un archivo.");
+    }
   }
 
   logout(): void {
