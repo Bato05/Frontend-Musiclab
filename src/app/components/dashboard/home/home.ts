@@ -7,7 +7,8 @@ import { Router, RouterLink } from '@angular/router';
   selector: 'app-home',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, RouterLink], 
+  imports: [CommonModule, 
+            RouterLink], 
   templateUrl: './home.html',
   styleUrl: '../../../app.css',
 })

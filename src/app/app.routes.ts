@@ -10,6 +10,7 @@ import { SearchUsers } from './components/dashboard/searchUsers/searchUsers';
 import { Profile } from './components/dashboard/profile/profile';
 import { Settings } from './components/dashboard/settings/settings';
 import { FollowingList } from './components/dashboard/followingList/followingList';
+import { Inbox } from './components/dashboard/inbox/inbox';
 
 export const routes: Routes = [
     // Redirecciones...
@@ -36,5 +37,8 @@ export const routes: Routes = [
       canActivate: [authGuard]},
     { path: 'following', 
       component: FollowingList, 
+      canActivate: [authGuard] },
+    { path: 'inbox', 
+      component: Inbox, 
       canActivate: [authGuard] }
 ];

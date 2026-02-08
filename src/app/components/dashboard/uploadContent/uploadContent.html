@@ -6,6 +6,16 @@
         <li class="nav-item"><a class="nav-link" routerLink="/content">My content</a></li>
         <li class="nav-item"><a class="nav-link active" routerLink="/upload">Upload content</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/search">Search artists</a></li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inbox">Inbox</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Options</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+            <li><a class="dropdown-item active" routerLink="/settings">Settings</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
     <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
@@ -35,9 +45,9 @@
         <label class="form-label small fw-bold text-light">Content Type</label>
         <div class="custom-input-group border-bottom border-secondary">
           <select formControlName="file_type" class="form-control bg-transparent border-0 text-white shadow-none">
-            <option value="audio" class="bg-dark">Audio File</option>
-            <option value="lyrics" class="bg-dark">Lyrics / Text</option>
-            <option value="score" class="bg-dark">Music Score (PDF/Img)</option>
+            <option value="audio" class="bg-dark">Audio (.mp3)</option>
+            <option value="lyrics" class="bg-dark">Lyrics (Text)</option>
+            <option value="score" class="bg-dark">Score (PDF)</option>
           </select>
         </div>
       </div>

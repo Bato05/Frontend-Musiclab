@@ -41,7 +41,12 @@
 </nav>
 
 <div class="home-wrapper d-flex flex-column align-items-center">
-  <div class="card my-3" *ngFor="let p of posts">
+  
+  <h3 class="text-white mt-3 mb-4" style="text-shadow: 0 0 10px var(--neon-blue);">
+    <i class="bi bi-inbox-fill me-2"></i>My Inbox
+  </h3>
+
+  <div class="card my-3" *ngFor="let p of receivedPosts">
     <div class="card-body text-center">
       
       <div class="profile-img-container mb-3">
@@ -54,10 +59,10 @@
 
       <h5 class="card-title text-white">{{ p.title }}</h5>
       <h6 class="card-subtitle mb-2 text-secondary">
-          Artist: {{ p.artist_name }}
+          From Artist: {{ p.artist_name }}
       </h6>
       <p class="card-date">
-        published: {{ p.created_at | date:'yyyy/MM/dd HH:mm' }}
+        received: {{ p.created_at | date:'yyyy/MM/dd HH:mm' }}
       </p>
       <p class="card-text">{{ p.description }}</p>
 
@@ -87,7 +92,11 @@
     </div>
   </div>
   
-  <div *ngIf="posts.length === 0" class="text-center mt-5 text-secondary">
-    <p>No posts available yet.</p>
+  <div *ngIf="loading" class="text-center mt-5">
+     <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading && receivedPosts.length === 0" class="text-center mt-5 text-secondary">
+    <p>No private messages received yet.</p>
   </div>
 </div>

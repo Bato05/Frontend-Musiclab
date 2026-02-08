@@ -11,7 +11,10 @@ import { FollowService } from '../../../services/followService';
   selector: 'app-user-content',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, RouterLink, RouterLinkActive, ReactiveFormsModule],
+  imports: [CommonModule, 
+            RouterLink, 
+            RouterLinkActive, 
+            ReactiveFormsModule],
   templateUrl: './userContent.html',
   styleUrl: '../../../app.css',
 })
