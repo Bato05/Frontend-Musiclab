@@ -116,6 +116,31 @@ export class UploadContent implements OnInit {
     }
   }
 
+  acceptedFileTypes(): string {
+  const type = this.uploadForm.get('file_type')?.value;
+  switch (type) {
+    case 'audio': return '.mp3, audio/mpeg'; // Muestra solo MP3
+    case 'score': return '.pdf, application/pdf'; // Muestra solo PDF
+    case 'text': return '.txt, text/plain';  // Muestra solo TXT
+    default: return '*'; // Por defecto
+  }
+}
+
+acceptedExtensions(): string {   
+  const type = this.uploadForm.get('file_type')?.value;
+  
+  switch (type) {
+    case 'audio':
+      return '.mp3';
+    case 'score':
+      return '.pdf';
+    case 'lyrics':
+      return '.txt';
+    default:
+      return '*';
+  }
+}
+
   logout(): void {
     localStorage.clear(); 
     this.router.navigate(['/login']);

@@ -88,7 +88,7 @@
         <label class="btn btn-outline-light w-100 py-3 border-dashed" style="border-style: dashed;">
           <i class="bi bi-cloud-arrow-up-fill me-2"></i> 
           {{ fileName ? fileName : 'Select File' }}
-          <input type="file" (change)="onFileSelected($event)" hidden>
+          <input type="file" [accept]="acceptedExtensions()" (change)="onFileSelected($event)" hidden>
         </label>
       </div>
 
