@@ -43,24 +43,32 @@ export class SearchUsers implements OnInit {
 
   // --- FUNCIÓN QUE FALTABA ---
   cargarArtistas(): void {
-  this.loading = true;
-  this.usersService.getUsers().subscribe({
-    next: (res: any) => {
-      // TRUCO DE ORO: Convertimos el ID a número inmediatamente
-      // Esto evita que '5' (texto) se compare con 5 (numero) y falle
-      const usuariosLimpios = res.map((u: any) => ({ ...u, id: Number(u.id) }));
-      
-      this.allArtists = usuariosLimpios;
-      this.filteredArtists = usuariosLimpios;
-      this.loading = false;
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error("Error al cargar artistas:", err);
-      this.loading = false;
-    }
-  });
-}
+    this.loading = true;
+
+    // 1. Obtenemos el ID del usuario logueado para saber a quién ocultar
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    const miId = Number(sesion.user?.id || sesion.id);
+
+    this.usersService.getUsers().subscribe({
+      next: (res: any) => {
+        // 2. Procesamos la lista:
+        //    Primero: Convertimos el ID a número (tu truco de oro).
+        //    Segundo: Filtramos para que SOLO pasen los que NO son yo.
+        const usuariosLimpios = res
+            .map((u: any) => ({ ...u, id: Number(u.id) })) 
+            .filter((u: any) => u.id !== miId); // <--- AQUÍ ESTÁ LA MAGIA
+
+        this.allArtists = usuariosLimpios;
+        this.filteredArtists = usuariosLimpios;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Error al cargar artistas:", err);
+        this.loading = false;
+      }
+    });
+  }
 
   cargarSeguidos(): void {
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
