@@ -15,6 +15,8 @@ import { DeleteUsers } from '../../../services/deleteUsers';
   styleUrl: '../../../app.css'
 })
 export class Settings implements OnInit {
+
+  userRole: number = 0;
   
   public settingsForm: FormGroup;
   public loading: boolean = false;
@@ -38,6 +40,14 @@ export class Settings implements OnInit {
 
   ngOnInit(): void {
     this.cargarDatosUsuario();
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
   }
 
   // Validador: Compara contraseñas solo si el campo password tiene contenido

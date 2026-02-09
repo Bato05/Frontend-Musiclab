@@ -14,6 +14,9 @@ import { FollowService } from '../../../services/followService';
   styleUrl: '../../../app.css'
 })
 export class SearchUsers implements OnInit {
+
+  userRole: number = 0;
+
   // --- Propiedades de Datos ---
   public allArtists: any[] = [];      
   public filteredArtists: any[] = []; 
@@ -39,6 +42,14 @@ export class SearchUsers implements OnInit {
   ngOnInit(): void {
     this.cargarArtistas();
     this.cargarSeguidos(); 
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
   }
 
   // --- FUNCIÓN QUE FALTABA ---

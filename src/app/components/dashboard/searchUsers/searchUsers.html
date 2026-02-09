@@ -27,6 +27,12 @@
             <li><a class="dropdown-item active" routerLink="/settings">Settings</a></li>
           </ul>
         </li>
+
+        <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <i class="bi bi-shield-lock-fill"></i> Control panel
+          </a>
+        </li>
       </ul>
     </div>
     <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>

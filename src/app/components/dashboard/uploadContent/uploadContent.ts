@@ -16,6 +16,8 @@ import { FollowService } from '../../../services/followService';
   styleUrl: '../../../app.css',
 })
 export class UploadContent implements OnInit {
+
+  userRole: number = 0;
   
   public uploadForm: FormGroup;
   public usersList: any[] = []; // Lista de usuarios seguidos
@@ -43,6 +45,14 @@ export class UploadContent implements OnInit {
 
   ngOnInit() {
     this.cargarSeguidos();
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
   }
 
   cargarSeguidos() {

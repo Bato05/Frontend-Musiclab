@@ -13,12 +13,24 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: '../../../app.css',
 })
 export class Home implements OnInit {
+
+  userRole: number = 0;
+
   public posts: any[] = []; 
   private getPostsService = inject(GetPosts);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
   ngOnInit(): void {
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
+
     this.getPostsService.getPosts().subscribe({
       next: (res) => {
         // FILTRO: Solo guardamos las publicaciones cuya visibilidad sea 'public'

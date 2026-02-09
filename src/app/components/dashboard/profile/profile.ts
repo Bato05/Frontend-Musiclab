@@ -14,6 +14,8 @@ import { PatchUsers } from '../../../services/patchUsers';
   styleUrl: '../../../app.css'
 })
 export class Profile implements OnInit {
+
+  userRole:number = 0;
   
   public profileForm: FormGroup;
   public loading: boolean = false;
@@ -43,6 +45,14 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
     this.cargarDatosUsuario();
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
   }
 
   cargarDatosUsuario() {

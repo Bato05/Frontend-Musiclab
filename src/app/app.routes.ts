@@ -11,6 +11,7 @@ import { Profile } from './components/dashboard/profile/profile';
 import { Settings } from './components/dashboard/settings/settings';
 import { FollowingList } from './components/dashboard/followingList/followingList';
 import { Inbox } from './components/dashboard/inbox/inbox';
+import { AdminPanel } from './components/dashboard/adminPanel/adminPanel';
 
 export const routes: Routes = [
     // Redirecciones...
@@ -40,5 +41,8 @@ export const routes: Routes = [
       canActivate: [authGuard] },
     { path: 'inbox', 
       component: Inbox, 
+      canActivate: [authGuard] },
+    { path: 'admin', 
+      component: AdminPanel, 
       canActivate: [authGuard] }
 ];

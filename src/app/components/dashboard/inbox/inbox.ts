@@ -12,6 +12,9 @@ import { GetPosts } from '../../../services/getPosts';
   styleUrl: '../../../app.css'
 })
 export class Inbox implements OnInit {
+
+  userRole:number = 0;
+
   public receivedPosts: any[] = [];
   public loading: boolean = true;
   
@@ -21,6 +24,14 @@ export class Inbox implements OnInit {
 
   ngOnInit(): void {
     this.cargarMensajesRecibidos();
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
   }
 
   cargarMensajesRecibidos() {

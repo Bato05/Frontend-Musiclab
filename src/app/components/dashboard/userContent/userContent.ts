@@ -16,6 +16,8 @@ import { FollowService } from '../../../services/followService';
   styleUrl: '../../../app.css',
 })
 export class UserContent implements OnInit {
+  userRole: number = 0;
+
   public posts: any[] = [];
   public followedUsers: any[] = [];
   public datosListos: boolean = false;
@@ -48,6 +50,14 @@ export class UserContent implements OnInit {
   ngOnInit(): void {
     this.cargarMisPublicaciones();
     this.cargarMisSeguidos();
+    const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
+    
+    // 2. Extracción SEGURA del rol
+    // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
+    const rawRole = sesion.user?.role || sesion.role || 0;
+
+    // 3. Asignación y conversión
+    this.userRole = Number(rawRole);
   }
 
   acceptedExtensions(): string {   
