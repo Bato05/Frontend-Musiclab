@@ -184,47 +184,156 @@
 </div>
 
 <div *ngIf="modalPostsAbierto" class="custom-modal-overlay">
-    <div class="custom-modal-content">
-        <div class="modal-header">
+    <div class="custom-modal-content" style="max-width: 700px;">
+        
+        <div class="modal-header border-bottom border-secondary">
             <h5 class="text-white mb-0">
-                <i class="bi bi-collection-play-fill me-2"></i> Posts de {{ usuarioSeleccionado.first_name }}
+                <i class="bi bi-collection-play-fill me-2 text-info"></i> 
+                Publicaciones de <span class="fw-bold text-info">{{ usuarioSeleccionado.first_name }}</span>
             </h5>
             <button (click)="cerrarModales()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i></button>
         </div>
-        <div class="modal-body p-0">
+
+        <div class="modal-body p-0" style="max-height: 60vh; overflow-y: auto;">
             
             <div *ngIf="cargandoPosts" class="text-center py-5">
-                <div class="spinner-border text-primary" role="status"></div>
+                <div class="spinner-border text-info" role="status"></div>
+                <p class="mt-2 text-muted">Cargando biblioteca...</p>
             </div>
 
             <div *ngIf="!cargandoPosts && listaPostsUsuario.length === 0" class="text-center py-5 text-muted">
-                <i class="bi bi-music-note-beamed fs-1"></i>
-                <p class="mt-2">Sin publicaciones.</p>
+                <i class="bi bi-music-note-list fs-1 opacity-50"></i>
+                <p class="mt-2">Este usuario no tiene publicaciones.</p>
             </div>
 
-            <ul *ngIf="!cargandoPosts && listaPostsUsuario.length > 0" class="list-group list-group-flush">
-                <li *ngFor="let post of listaPostsUsuario" class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center p-3">
-                    <div class="d-flex align-items-center overflow-hidden">
-                        <i class="bi bi-file-music text-info fs-4 me-3"></i>
-                        <div>
-                            <div class="fw-bold">{{ post.title }}</div>
-                            <small class="text-muted">{{ post.created_at | date:'shortDate' }}</small>
+            <div *ngIf="!cargandoPosts && listaPostsUsuario.length > 0" class="d-flex flex-column">
+                
+                <div *ngFor="let post of listaPostsUsuario" 
+                     class="d-flex align-items-center p-3 border-bottom border-secondary hover-effect"
+                     style="transition: background 0.2s;">
+                    
+                    <div class="me-3 rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 50px; height: 50px; background: rgba(255,255,255,0.05);">
+                        <i class="bi fs-3" 
+                           [ngClass]="{
+                               'bi-file-music-fill text-warning': post.file_type === 'audio',
+                               'bi-file-earmark-pdf-fill text-danger': post.file_type === 'score',
+                               'bi-file-text-fill text-info': post.file_type === 'lyrics' || post.file_type === 'text'
+                           }"></i>
+                    </div>
+
+                    <div class="flex-grow-1 min-width-0 me-3">
+                        <h6 class="text-white mb-1 text-truncate" title="{{ post.title }}">
+                            {{ post.title }}
+                        </h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-dark border border-secondary text-secondary" style="font-size: 0.7rem;">
+                                {{ post.file_type | uppercase }}
+                            </span>
+                            <small class="text-muted" style="font-size: 0.8rem;">
+                                <i class="bi bi-calendar3 me-1"></i> {{ post.created_at | date:'mediumDate' }}
+                            </small>
+                             <small *ngIf="post.visibility" class="text-muted ms-1" style="font-size: 0.8rem;">
+                                <i class="bi" [ngClass]="{
+                                    'bi-globe': post.visibility === 'public',
+                                    'bi-people-fill': post.visibility === 'followers',
+                                    'bi-lock-fill': post.visibility === 'private'
+                                }"></i>
+                            </small>
                         </div>
                     </div>
                     
-                    <div class="d-flex gap-2">
-                        <a [href]="'http://localhost/phpMusicLab/uploads/' + post.file_url" target="_blank" class="btn btn-sm btn-outline-light">
-                            <i class="bi bi-play-fill"></i>
+                    <div class="d-flex gap-2 flex-shrink-0">
+                        <a [href]="'http://localhost/phpMusicLab/uploads/' + post.file_url" target="_blank" 
+                           class="btn btn-sm btn-outline-light d-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-up-right"></i> 
+                            <span class="d-none d-sm-inline">Abrir</span>
                         </a>
-                        <button (click)="eliminarPost(post)" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i>
+
+                        <button (click)="abrirModalEditarPost(post)" 
+                                class="btn btn-sm btn-outline-info d-flex align-items-center gap-2">
+                            <i class="bi bi-pencil-square"></i> 
+                            <span class="d-none d-sm-inline">Editar</span>
+                        </button>
+
+                        <button (click)="eliminarPost(post)" 
+                                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2">
+                            <i class="bi bi-trash-fill"></i> 
+                            <span class="d-none d-sm-inline">Eliminar</span>
                         </button>
                     </div>
-                </li>
-            </ul>
+
+                </div>
+            </div>
+
         </div>
-        <div class="p-3 bg-dark text-end border-top border-secondary">
-            <button (click)="cerrarModales()" class="btn btn-secondary btn-sm">Cerrar</button>
+        <div class="p-3 bg-dark text-end border-top border-secondary rounded-bottom">
+            <button (click)="cerrarModales()" class="btn btn-secondary px-4">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="modalEditarPostAbierto" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5 class="text-white mb-0"><i class="bi bi-pencil-square me-2"></i> Editar Publicación</h5>
+            <button (click)="cancelarEdicionPost()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formEditarPost" (ngSubmit)="guardarPostEditado()">
+                
+                <div class="mb-3">
+                    <label class="form-label">Título</label>
+                    <input type="text" formControlName="title" class="custom-input" placeholder="Título...">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tipo de Contenido</label>
+                    <select formControlName="file_type" class="custom-input form-select bg-dark text-white border-secondary">
+                        <option value="audio">Audio (.mp3)</option>
+                        <option value="lyrics">Letra (Texto)</option>
+                        <option value="score">Partitura (PDF)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Visibilidad</label>
+                    <select formControlName="visibility" class="custom-input form-select bg-dark text-white border-secondary">
+                        <option value="public">Público</option>
+                        <option value="followers">Seguidor Específico</option>
+                        <option value="private">Privado</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" *ngIf="formEditarPost.get('visibility')?.value === 'followers'">
+                    <label class="form-label text-info">Usuario Destino</label>
+                    <select formControlName="destination_id" class="custom-input form-select bg-dark text-white border-info">
+                        <option [ngValue]="null" disabled>Seleccionar usuario...</option>
+                        <option *ngFor="let user of usersList" [ngValue]="user.id">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Descripción</label>
+                    <textarea formControlName="description" class="custom-input" rows="3"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="btn btn-outline-light w-100 py-3 border-dashed" style="border-style: dashed; cursor: pointer;">
+                      <i class="bi bi-cloud-arrow-up-fill me-2"></i> 
+                      {{ postFileName ? postFileName : 'Reemplazar Archivo (Opcional)' }}
+                      <input type="file" [accept]="acceptedExtensions()" (change)="onPostFileSelected($event)" hidden>
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" (click)="cancelarEdicionPost()" class="btn btn-outline-secondary">Cancelar</button>
+                    <button type="submit" [disabled]="formEditarPost.invalid" class="btn btn-primary px-4">Guardar Cambios</button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
