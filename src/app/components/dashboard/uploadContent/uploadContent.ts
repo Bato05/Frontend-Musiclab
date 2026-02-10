@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Validators, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UploadService } from '../../../services/uploadService';
 import { FollowService } from '../../../services/followService';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-upload-content', 
@@ -18,6 +19,8 @@ import { FollowService } from '../../../services/followService';
 export class UploadContent implements OnInit {
 
   userRole: number = 0;
+
+  siteName: string = 'MusicLab';
   
   public uploadForm: FormGroup;
   public usersList: any[] = []; // Lista de usuarios seguidos
@@ -31,6 +34,7 @@ export class UploadContent implements OnInit {
   private fb = inject(FormBuilder);
   private uploadService = inject(UploadService);
   private followService = inject(FollowService);
+  private siteConfigService = inject(SiteConfigService);
 
   constructor() {
     this.uploadForm = this.fb.group({
@@ -53,6 +57,13 @@ export class UploadContent implements OnInit {
 
     // 3. Asignación y conversión
     this.userRole = Number(rawRole);
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   cargarSeguidos() {

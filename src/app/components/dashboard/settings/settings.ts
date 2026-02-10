@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractContro
 import { GetUsers } from '../../../services/getUsers';
 import { PatchUsers } from '../../../services/patchUsers';
 import { DeleteUsers } from '../../../services/deleteUsers';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-settings',
@@ -18,6 +19,8 @@ export class Settings implements OnInit {
 
   userRole: number = 0;
   
+  siteName: string = 'MusicLab';
+
   public settingsForm: FormGroup;
   public loading: boolean = false;
   public deleting: boolean = false;
@@ -29,6 +32,7 @@ export class Settings implements OnInit {
   private getUsersService = inject(GetUsers);
   private patchUsersService = inject(PatchUsers);
   private deleteUsersService = inject(DeleteUsers);
+  private siteConfigService = inject(SiteConfigService);
 
   constructor() {
     this.settingsForm = this.fb.group({
@@ -48,6 +52,13 @@ export class Settings implements OnInit {
 
     // 3. Asignación y conversión
     this.userRole = Number(rawRole);
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   // Validador: Compara contraseñas solo si el campo password tiene contenido

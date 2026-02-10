@@ -1,12 +1,11 @@
-import { Component, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router'; 
-
-import { Router } from '@angular/router'; // importacion del Router
+import { Router } from '@angular/router'; 
 import { Validators, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 
 import { RegisterService } from '../../../services/registerService';
-import { inject } from '@angular/core';
+import { SiteConfigService } from '../../../services/siteConfigService'; 
 
 @Component({
   selector: 'app-register',
@@ -14,60 +13,69 @@ import { inject } from '@angular/core';
   encapsulation: ViewEncapsulation.None, 
   imports: [
     RouterLink, 
-    RouterLinkActive, 
+    RouterLinkActive,
     CommonModule,
     ReactiveFormsModule
   ],
   templateUrl: './register.html',
-  styleUrl: '../../../app.css'
+  styleUrl: '../../../app.css',
 })
-export class Register {
+export class Register implements OnInit {
   public formulario: FormGroup;
-
-  private registerService = inject(RegisterService);// fundamental injectar el httpclient si no, no funciona
-
-  private router = inject(Router); // necesario para el cambiar a la interfaz del logeo
   
+  // Variables dinámicas
+  siteName: string = 'MusicLab';
+  welcomeText: string = 'Collaborate with musicians from all over the world';
+
+  private router = inject(Router);
+  private registerService = inject(RegisterService);
+  private siteConfigService = inject(SiteConfigService);
+
   constructor(private fb: FormBuilder) {
     this.formulario = this.fb.group({
-      id: [null, []],
-      first_name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ñÑ]+$/u)]],
-      last_name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ñÑ]+$/u)]],
+      first_name: ['', [Validators.required, Validators.minLength(2)]],
+      last_name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirm_password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['user'], 
-      artist_type: [[], [Validators.required]], 
-      bio: ['', [Validators.maxLength(500)]],
-      profile_img_url: ['default_profile.png'],
-      status: [1], 
-      created_at: [new Date().toISOString()]
-    }, {
-      // aplicamos el validaor de contrasenias a nivel de grupo (formulario)
-      validators: this.passwordsMatch
+      // Agregamos campos que faltaban en la validación del TS pero estaban en el HTML
+      confirm_password: [''], 
+      artist_type: ['', Validators.required],
+      bio: ['']
     });
   }
 
-registrarse() {
-  if (this.formulario.valid) {
-    this.registerService.postUser(this.formulario.value).subscribe({
-      next: (res: any) => {
-        alert('¡Usuario creado correctamente!');
-        this.formulario.reset(res);
-        // Si estamos seguros que el registro fue un correcto, ahi si cambiamos al logeo
-        this.router.navigate(['/login']);
-      },
-      error: (err: any) => {
-        alert('Error en el registro');
+  ngOnInit(): void {
+    // Cargar configuración global (Nombre y Texto de Bienvenida)
+    this.siteConfigService.getSiteconfig().subscribe();
+    
+    this.siteConfigService.config$.subscribe(config => {
+      if (config) {
+        this.siteName = config.site_name || 'MusicLab';
+        this.welcomeText = config.welcome_text || 'Collaborate with musicians from all over the world';
       }
     });
   }
-}
 
-passwordsMatch(form: FormGroup) {
-  const password = form.get('password') ?.value;
-  const confirm_password = form.get('confirm_password') ?.value;
-  
-  return password === confirm_password ? null : { notMatching: true };
-}
+  registrarse() {
+    if (this.formulario.valid) {
+      // Opcional: Validar que las contraseñas coincidan aquí antes de enviar
+      if (this.formulario.value.password !== this.formulario.value.confirm_password) {
+          alert("Las contraseñas no coinciden.");
+          return;
+      }
+
+      this.registerService.postUser(this.formulario.value).subscribe({
+        next: (res: any) => {
+          alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
+          this.router.navigate(['/login']);
+        },
+        error: (err: any) => {
+          console.error(err);
+          alert('Error al registrarse. Posiblemente el email ya existe.');
+        }
+      });
+    } else {
+        alert("Por favor completa todos los campos requeridos.");
+    }
+  }
 }

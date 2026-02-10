@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" routerLink="/home">MusicLab</a>
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -122,7 +122,12 @@
         </div>
     </div>
 
-    <div *ngIf="!loading && userRole === 2" class="mt-5 text-end">
+    <div *ngIf="!loading && userRole === 2" class="mt-5 d-flex justify-content-end gap-3">
+        
+        <button (click)="abrirModalConfig()" class="btn btn-outline-info fw-bold px-4">
+            <i class="bi bi-gear-fill me-2"></i> Configurar Web
+        </button>
+
         <button (click)="restaurarSistema()" class="btn btn-outline-danger fw-bold px-4">
             <i class="bi bi-database-fill-down me-2"></i> RESTAURAR BD
         </button>
@@ -349,6 +354,49 @@
                     <button type="submit" [disabled]="formEditarPost.invalid" class="btn btn-primary px-4">Guardar Cambios</button>
                 </div>
 
+            </form>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="modalConfigAbierto" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5 class="text-white mb-0"><i class="bi bi-gear-fill me-2"></i> Configuración del Sitio</h5>
+            <button (click)="cerrarModales()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formSiteConfig" (ngSubmit)="guardarConfiguracion()">
+                
+                <div class="mb-3">
+                    <label class="form-label">Nombre del Sitio (Navbar)</label>
+                    <input type="text" formControlName="site_name" class="custom-input" placeholder="Ej: MusicLab">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Texto de Bienvenida (Home/Login)</label>
+                    <textarea formControlName="welcome_text" class="custom-input" rows="3" placeholder="Mensaje principal..."></textarea>
+                </div>
+
+                <div class="mb-4 p-3 border border-secondary rounded-3 d-flex align-items-center justify-content-between" 
+                     style="background: rgba(255, 255, 255, 0.05);">
+                    <div>
+                        <label class="form-check-label fw-bold text-white mb-0">
+                            <i class="bi bi-cone-striped text-warning me-2"></i> Modo Mantenimiento
+                        </label>
+                        <div class="text-muted small mt-1">
+                            Al activar, <strong>solo Admins y Owner</strong> podrán iniciar sesión.
+                        </div>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" formControlName="maintenance_mode" style="transform: scale(1.3); cursor: pointer;">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <button type="button" (click)="cerrarModales()" class="btn btn-outline-secondary">Cancelar</button>
+                    <button type="submit" [disabled]="formSiteConfig.invalid" class="btn btn-primary px-4">Aplicar Cambios</button>
+                </div>
             </form>
         </div>
     </div>

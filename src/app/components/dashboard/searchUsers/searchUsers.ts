@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GetUsers } from '../../../services/getUsers';
 import { FollowService } from '../../../services/followService';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-search-users',
@@ -16,6 +17,8 @@ import { FollowService } from '../../../services/followService';
 export class SearchUsers implements OnInit {
 
   userRole: number = 0;
+
+  siteName: string = 'MusicLab';
 
   // --- Propiedades de Datos ---
   public allArtists: any[] = [];      
@@ -38,6 +41,7 @@ export class SearchUsers implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private followService = inject(FollowService);
+  private siteConfigService = inject(SiteConfigService);
 
   ngOnInit(): void {
     this.cargarArtistas();
@@ -50,6 +54,13 @@ export class SearchUsers implements OnInit {
 
     // 3. Asignación y conversión
     this.userRole = Number(rawRole);
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   // --- FUNCIÓN QUE FALTABA ---

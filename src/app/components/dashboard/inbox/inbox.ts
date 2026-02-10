@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ViewEncapsulation, ChangeDetectorRef } from 
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { GetPosts } from '../../../services/getPosts';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-inbox',
@@ -15,12 +16,15 @@ export class Inbox implements OnInit {
 
   userRole:number = 0;
 
+  siteName: string = 'MusicLab';
+
   public receivedPosts: any[] = [];
   public loading: boolean = true;
   
   private postsService = inject(GetPosts);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef); // Inyección del detector
+  private siteConfigService = inject(SiteConfigService);
 
   ngOnInit(): void {
     this.cargarMensajesRecibidos();
@@ -32,6 +36,13 @@ export class Inbox implements OnInit {
 
     // 3. Asignación y conversión
     this.userRole = Number(rawRole);
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   cargarMensajesRecibidos() {

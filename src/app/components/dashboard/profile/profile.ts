@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // Quitamos Validators que ya no se usan
 import { GetUsers } from '../../../services/getUsers';
 import { PatchUsers } from '../../../services/patchUsers';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +17,8 @@ import { PatchUsers } from '../../../services/patchUsers';
 export class Profile implements OnInit {
 
   userRole:number = 0;
+
+  siteName: string = 'MusicLab';
   
   public profileForm: FormGroup;
   public loading: boolean = false;
@@ -32,6 +35,7 @@ export class Profile implements OnInit {
   private getUsersService = inject(GetUsers);
   private patchUsersService = inject(PatchUsers);
   private cdr = inject(ChangeDetectorRef);
+  private siteConfigService = inject(SiteConfigService);
 
   constructor() {
     // ELIMINADO: campo email
@@ -53,6 +57,13 @@ export class Profile implements OnInit {
 
     // 3. Asignación y conversión
     this.userRole = Number(rawRole);
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   cargarDatosUsuario() {

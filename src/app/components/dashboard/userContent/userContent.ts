@@ -6,6 +6,7 @@ import { GetPosts } from '../../../services/getPosts';
 import { DeletePosts } from '../../../services/deletePosts';
 import { PatchPost } from '../../../services/patchPosts';
 import { FollowService } from '../../../services/followService';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-user-content',
@@ -16,7 +17,10 @@ import { FollowService } from '../../../services/followService';
   styleUrl: '../../../app.css',
 })
 export class UserContent implements OnInit {
+  
   userRole: number = 0;
+
+  siteName: string = 'MusicLab';
 
   public posts: any[] = [];
   public followedUsers: any[] = [];
@@ -36,6 +40,7 @@ export class UserContent implements OnInit {
   private followService = inject(FollowService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private siteConfigService = inject(SiteConfigService);
 
   constructor() {
     this.formEdicion = this.fb.group({
@@ -58,6 +63,13 @@ export class UserContent implements OnInit {
 
     // 3. Asignación y conversión
     this.userRole = Number(rawRole);
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   acceptedExtensions(): string {   

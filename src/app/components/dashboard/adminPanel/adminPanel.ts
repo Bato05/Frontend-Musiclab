@@ -15,6 +15,7 @@ import { PatchPost } from '../../../services/patchPosts';
 
 // Servicios de Sistema
 import { RestoreDatabase } from '../../../services/restoreDatabase';
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-admin-panel',
@@ -26,6 +27,8 @@ import { RestoreDatabase } from '../../../services/restoreDatabase';
 })
 export class AdminPanel implements OnInit {
 
+  siteName: string = 'MusicLab';
+
   userRole: number = 0;
   myId: number = 0;
   usersList: any[] = [];
@@ -35,20 +38,22 @@ export class AdminPanel implements OnInit {
   modalEdicionAbierto: boolean = false;
   modalPostsAbierto: boolean = false;
   modalEditarPostAbierto: boolean = false;
+  modalConfigAbierto: boolean = false; // <--- Nuevo Modal Config
   
-  // Datos temporales Usuario
+  // Datos temporales
   usuarioSeleccionado: any = {};
   nuevaPassword: string = '';
   newImgBase64: string = '';
   newImgName: string = '';
   previewUrl: string | null = null;
   
-  // Datos temporales Posts
   listaPostsUsuario: any[] = [];
   cargandoPosts: boolean = false;
 
-  // Variables para Edición de Post
+  // Formularios
   formEditarPost: FormGroup;
+  formSiteConfig: FormGroup; // <--- Nuevo Formulario Config
+
   idPostAEditar: number | null = null;
   postFileBase64: string = '';
   postFileName: string = '';
@@ -57,7 +62,7 @@ export class AdminPanel implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
   
-  // Inyección de Servicios
+  // Inyecciones
   private getUsersService = inject(GetUsers);
   private patchUsersService = inject(PatchUsers);
   private deleteUsersService = inject(DeleteUsers);
@@ -65,14 +70,23 @@ export class AdminPanel implements OnInit {
   private deletePostsService = inject(DeletePosts);
   private patchPostService = inject(PatchPost);
   private restoreService = inject(RestoreDatabase);
+  private siteConfigService = inject(SiteConfigService); // <--- Inyección
 
   constructor() {
+    // Formulario para editar Posts
     this.formEditarPost = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', Validators.maxLength(200)],
       file_type: ['audio', Validators.required],
       visibility: ['public', Validators.required],
       destination_id: [null]
+    });
+
+    // Formulario para Configuración del Sitio (Solo Owner)
+    this.formSiteConfig = this.fb.group({
+        site_name: ['', Validators.required],
+        welcome_text: ['', Validators.required],
+        maintenance_mode: [false] // Se maneja como boolean en el form
     });
   }
 
@@ -83,6 +97,18 @@ export class AdminPanel implements OnInit {
     this.myId = Number(sesion.user?.id || sesion.id || 0);
 
     this.cargarUsuarios();
+
+    // Si es Owner, precargamos la configuración del sitio
+    if (this.userRole === 2) {
+        this.siteConfigService.getSiteconfig().subscribe();
+    }
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
+    });
   }
 
   // ==========================================
@@ -93,8 +119,10 @@ export class AdminPanel implements OnInit {
     this.getUsersService.getUsers().subscribe({
       next: (res: any) => {
         if (this.userRole === 1) {
+            // Admin ve solo usuarios comunes
             this.usersList = res.filter((u: any) => Number(u.role) === 0);
         } else if (this.userRole === 2) {
+            // Owner ve usuarios y admins (menos a sí mismo)
             this.usersList = res.filter((u: any) => Number(u.role) < 2 && Number(u.id) !== this.myId);
         } else {
             this.usersList = [];
@@ -115,7 +143,7 @@ export class AdminPanel implements OnInit {
   }
 
   // ==========================================
-  // CAMBIO DE ROL (SOLO OWNER)
+  // LÓGICA: CAMBIO DE ROL (SOLO OWNER)
   // ==========================================
   toggleAdminRole(user: any) {
     if (this.userRole !== 2) return;
@@ -137,40 +165,80 @@ export class AdminPanel implements OnInit {
   }
 
   // ==========================================
-  // RESTAURACIÓN DE SISTEMA (SOLO OWNER)
+  // LÓGICA: RESTAURAR BD (SOLO OWNER)
   // ==========================================
   restaurarSistema() {
     if (this.userRole !== 2) return; 
-
-    if (!confirm("⚠️ ADVERTENCIA CRÍTICA ⚠️\n\nEstás a punto de RESTAURAR la base de datos completa.\n\nSe borrarán TODOS los usuarios, posts y cambios recientes.\n¿Estás realmente seguro?")) {
-        return;
-    }
-
-    if (!confirm("Confirmación final:\n\nEsta acción NO se puede deshacer.\n\nPulsa Aceptar para reiniciar el sistema.")) {
-        return;
-    }
+    if (!confirm("⚠️ ¿Estás seguro de que quieres RESTAURAR la base de datos?\n\nSe borrarán todos los cambios recientes.")) return;
+    if (!confirm("Confirmación final:\n\nEsta acción es irreversible.\nPulsa Aceptar para reiniciar el sistema.")) return;
 
     this.loading = true;
     this.cdr.detectChanges();
 
     this.restoreService.restoreDB().subscribe({
         next: (res: any) => {
-            alert("✅ SISTEMA RESTAURADO CON ÉXITO\n\nSe cerrará la sesión para aplicar los cambios.");
+            alert("✅ Sistema restaurado con éxito.\nSe cerrará la sesión.");
             this.logout(); 
         },
         error: (err: any) => {
             console.error(err);
-            alert("❌ Error crítico al intentar restaurar la base de datos.");
+            alert("❌ Error al restaurar la base de datos.");
             this.loading = false;
             this.cdr.detectChanges();
         }
     });
   }
 
-  // ==========================================
-  // LÓGICA DEL MODAL DE EDICIÓN USUARIO
-  // ==========================================
-  
+  // ==============================================
+  // LÓGICA: CONFIGURACIÓN DEL SITIO (NUEVO)
+  // ==============================================
+
+  abrirModalConfig() {
+    // Nos suscribimos al estado actual del servicio para llenar el formulario
+    // Usamos 'take(1)' o una suscripción directa simple porque config$ es un BehaviorSubject
+    const currentConfig = (this.siteConfigService as any).configSubject.value; // Acceso directo al valor actual
+    
+    this.formSiteConfig.patchValue({
+        site_name: currentConfig.site_name,
+        welcome_text: currentConfig.welcome_text,
+        // Convertimos el 1/0 de la BD a true/false para el checkbox
+        maintenance_mode: Number(currentConfig.maintenance_mode) === 1
+    });
+    
+    this.modalConfigAbierto = true;
+  }
+
+  guardarConfiguracion() {
+    if (this.formSiteConfig.invalid) {
+        alert("Por favor, completa los campos obligatorios.");
+        return;
+    }
+
+    if (!confirm("¿Aplicar cambios a la configuración global?")) return;
+
+    const formValue = this.formSiteConfig.value;
+    
+    // Preparar payload: Convertir true/false a 1/0
+    const payload = {
+        site_name: formValue.site_name,
+        welcome_text: formValue.welcome_text,
+        maintenance_mode: formValue.maintenance_mode ? 1 : 0
+    };
+
+    this.siteConfigService.patchSiteconfig(payload).subscribe({
+        next: (res: any) => {
+            alert("✅ Configuración actualizada correctamente.");
+            this.cerrarModales();
+        },
+        error: (err: any) => {
+            console.error(err);
+            alert("Error al guardar la configuración.");
+        }
+    });
+  }
+
+  // ... (Resto de funciones: Modales Edición, Posts, etc. se mantienen igual) ...
+
   abrirModalEdicion(user: any) {
     this.usuarioSeleccionado = { ...user };
     this.nuevaPassword = '';
@@ -200,7 +268,6 @@ export class AdminPanel implements OnInit {
 
   guardarCambiosUsuario() {
     if (!confirm(`¿Confirmar cambios para ${this.usuarioSeleccionado.first_name}?`)) return;
-
     const datosActualizar: any = {
         first_name: this.usuarioSeleccionado.first_name,
         last_name: this.usuarioSeleccionado.last_name,
@@ -208,38 +275,28 @@ export class AdminPanel implements OnInit {
         bio: this.usuarioSeleccionado.bio,
         artist_type: this.usuarioSeleccionado.artist_type
     };
-
     if (this.nuevaPassword && this.nuevaPassword.trim() !== '') {
         datosActualizar.password = this.nuevaPassword;
     }
-
     if (this.newImgBase64) {
         datosActualizar.profile_img_data = this.newImgBase64;
         datosActualizar.profile_img_name = this.newImgName;
     }
-
     this.patchUsersService.patchUsers(this.usuarioSeleccionado.id, datosActualizar).subscribe({
         next: (res) => {
             alert('Usuario actualizado correctamente.');
             this.cerrarModales();
             this.cargarUsuarios();
         },
-        error: (err) => {
-            alert('Error al actualizar usuario.');
-        }
+        error: (err) => alert('Error al actualizar usuario.')
     });
   }
-
-  // ==========================================
-  // LÓGICA DEL MODAL DE LISTA DE POSTS
-  // ==========================================
 
   abrirModalPosts(user: any) {
     this.usuarioSeleccionado = user;
     this.modalPostsAbierto = true;
     this.cargandoPosts = true;
     this.listaPostsUsuario = [];
-
     this.getPostsService.getUserPosts(user.id).subscribe({
         next: (res: any) => {
             this.listaPostsUsuario = Array.isArray(res) ? res : []; 
@@ -266,18 +323,12 @@ export class AdminPanel implements OnInit {
     }
   }
 
-  // ==========================================
-  // LÓGICA DEL MODAL DE EDICIÓN DE POST
-  // ==========================================
-
   abrirModalEditarPost(post: any) {
     this.modalPostsAbierto = false; 
     this.modalEditarPostAbierto = true;
-
     this.idPostAEditar = post.id;
     this.postFileName = ''; 
     this.postFileBase64 = '';
-
     this.formEditarPost.patchValue({
         title: post.title,
         description: post.description,
@@ -314,14 +365,11 @@ export class AdminPanel implements OnInit {
         return;
     }
     if (!this.idPostAEditar) return;
-
     const formVal = this.formEditarPost.value;
-    
     let idDestinoLimpio = formVal.destination_id;
     if (formVal.visibility !== 'followers' || !idDestinoLimpio || idDestinoLimpio === 0) {
         idDestinoLimpio = null;
     }
-
     const payload: any = { 
         title: formVal.title,
         description: formVal.description,
@@ -329,20 +377,16 @@ export class AdminPanel implements OnInit {
         visibility: formVal.visibility,
         destination_id: idDestinoLimpio
     };
-
     if (this.postFileBase64) {
         payload.file_name = this.postFileName;
         payload.file_data = this.postFileBase64.split(',')[1];
     }
-
     this.patchPostService.patchPosts(this.idPostAEditar, payload).subscribe({
         next: (res: any) => {
             alert("¡Publicación actualizada!");
             this.cerrarModalEditarPost();
         },
-        error: (err) => {
-            alert("Error al actualizar post.");
-        }
+        error: (err) => alert("Error al actualizar post.")
     });
   }
 
@@ -356,16 +400,12 @@ export class AdminPanel implements OnInit {
     }
   }
 
-  // ==========================================
-  // GESTIÓN DE MODALES Y OTROS
-  // ==========================================
-
   cerrarModales() {
     this.modalEdicionAbierto = false;
     this.modalPostsAbierto = false;
     this.modalEditarPostAbierto = false;
+    this.modalConfigAbierto = false; // Cerramos el nuevo modal
     this.usuarioSeleccionado = {};
-    
     this.newImgBase64 = '';
     this.previewUrl = null;
   }
@@ -373,12 +413,9 @@ export class AdminPanel implements OnInit {
   toggleBlockUser(user: any) {
     const nuevoStatus = user.status == 1 ? 0 : 1;
     const accionTexto = nuevoStatus == 0 ? "bloquear" : "activar";
-
     if (confirm(`¿Estás seguro de que deseas ${accionTexto} a ${user.first_name}?`)) {
         this.patchUsersService.patchUsers(user.id, { status: nuevoStatus }).subscribe({
-            next: () => {
-                this.cargarUsuarios();
-            },
+            next: () => this.cargarUsuarios(),
             error: () => alert("Error al actualizar estado.")
         });
     }
@@ -387,9 +424,7 @@ export class AdminPanel implements OnInit {
   deleteUser(user: any) {
       if (confirm(`PELIGRO: ¿Eliminar definitivamente a ${user.first_name}?`)) {
           this.deleteUsersService.deleteUser(user.id).subscribe({
-              next: () => {
-                  this.cargarUsuarios();
-              },
+              next: () => this.cargarUsuarios(),
               error: () => alert("Error al eliminar usuario.")
           });
       }

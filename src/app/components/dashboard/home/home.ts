@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ViewEncapsulation, ChangeDetectorRef } from 
 import { CommonModule } from '@angular/common'; 
 import { GetPosts } from '../../../services/getPosts';
 import { Router, RouterLink } from '@angular/router'; 
+import { SiteConfigService } from '../../../services/siteConfigService';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +17,13 @@ export class Home implements OnInit {
 
   userRole: number = 0;
 
+  siteName: string = 'MusicLab';
+
   public posts: any[] = []; 
   private getPostsService = inject(GetPosts);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
+  private siteConfigService = inject(SiteConfigService);
 
   ngOnInit(): void {
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
@@ -38,6 +42,13 @@ export class Home implements OnInit {
         this.cdr.detectChanges(); // Fuerza la actualización de la vista
       },
       error: (err) => console.error("Error en la carga:", err)
+    });
+
+    // Lógica para el nombre del sitio dinámico
+    this.siteConfigService.config$.subscribe(config => {
+        if (config && config.site_name) {
+            this.siteName = config.site_name;
+        }
     });
   }
 
