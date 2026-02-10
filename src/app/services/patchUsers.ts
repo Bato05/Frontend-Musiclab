@@ -12,7 +12,7 @@ export class PatchUsers {
 
   constructor() { }
 
-  patchUsers(userData: any, id: number | string): Observable<any> {
+  patchUsers(id: number | string, userData: any): Observable<any> {
     // Obtenemos el token para la autorización
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     const token = sesion.token;

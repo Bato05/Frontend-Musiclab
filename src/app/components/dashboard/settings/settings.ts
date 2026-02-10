@@ -115,7 +115,7 @@ export class Settings implements OnInit {
         payload.password = currentPass;
       }
 
-      this.patchUsersService.patchUsers(payload, userId).subscribe({
+      this.patchUsersService.patchUsers(userId, payload).subscribe({
         next: (res: any) => {
           alert('Account settings updated successfully!');
           

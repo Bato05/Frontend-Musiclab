@@ -138,7 +138,8 @@ export class Profile implements OnInit {
         payload.profile_img_name = this.newImgName;
       }
 
-      this.patchUsersService.patchUsers(payload, userId).subscribe({
+      // CORRECCIÓN: Primero el userId, luego el payload
+      this.patchUsersService.patchUsers(userId, payload).subscribe({
         next: (res: any) => {
           alert('Profile updated successfully!');
           
