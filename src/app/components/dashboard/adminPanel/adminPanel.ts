@@ -13,6 +13,9 @@ import { GetPosts } from '../../../services/getPosts';
 import { DeletePosts } from '../../../services/deletePosts';
 import { PatchPost } from '../../../services/patchPosts';
 
+// Servicios de Sistema
+import { RestoreDatabase } from '../../../services/restoreDatabase';
+
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
@@ -61,6 +64,7 @@ export class AdminPanel implements OnInit {
   private getPostsService = inject(GetPosts);
   private deletePostsService = inject(DeletePosts);
   private patchPostService = inject(PatchPost);
+  private restoreService = inject(RestoreDatabase);
 
   constructor() {
     this.formEditarPost = this.fb.group({
@@ -96,7 +100,7 @@ export class AdminPanel implements OnInit {
             this.usersList = [];
         }
         this.loading = false;
-        this.cdr.detectChanges(); // Forzamos actualización visual
+        this.cdr.detectChanges(); 
       },
       error: (err: any) => {
         console.error("Error cargando usuarios:", err);
@@ -111,17 +115,68 @@ export class AdminPanel implements OnInit {
   }
 
   // ==========================================
+  // CAMBIO DE ROL (SOLO OWNER)
+  // ==========================================
+  toggleAdminRole(user: any) {
+    if (this.userRole !== 2) return;
+
+    const esAdmin = Number(user.role) === 1;
+    const nuevoRol = esAdmin ? 0 : 1;
+    const accion = esAdmin ? "DEGRADAR" : "ASCENDER";
+    const titulo = esAdmin ? "Usuario Común" : "ADMINISTRADOR";
+    
+    if (confirm(`¿Estás seguro de que deseas ${accion} a ${user.first_name}?\n\nNuevo Rol: ${titulo}`)) {
+        this.patchUsersService.patchUsers(user.id, { role: nuevoRol }).subscribe({
+            next: () => {
+                alert(`¡Permisos actualizados para ${user.first_name}!`);
+                this.cargarUsuarios(); 
+            },
+            error: () => alert("Error al cambiar permisos.")
+        });
+    }
+  }
+
+  // ==========================================
+  // RESTAURACIÓN DE SISTEMA (SOLO OWNER)
+  // ==========================================
+  restaurarSistema() {
+    if (this.userRole !== 2) return; 
+
+    if (!confirm("⚠️ ADVERTENCIA CRÍTICA ⚠️\n\nEstás a punto de RESTAURAR la base de datos completa.\n\nSe borrarán TODOS los usuarios, posts y cambios recientes.\n¿Estás realmente seguro?")) {
+        return;
+    }
+
+    if (!confirm("Confirmación final:\n\nEsta acción NO se puede deshacer.\n\nPulsa Aceptar para reiniciar el sistema.")) {
+        return;
+    }
+
+    this.loading = true;
+    this.cdr.detectChanges();
+
+    this.restoreService.restoreDB().subscribe({
+        next: (res: any) => {
+            alert("✅ SISTEMA RESTAURADO CON ÉXITO\n\nSe cerrará la sesión para aplicar los cambios.");
+            this.logout(); 
+        },
+        error: (err: any) => {
+            console.error(err);
+            alert("❌ Error crítico al intentar restaurar la base de datos.");
+            this.loading = false;
+            this.cdr.detectChanges();
+        }
+    });
+  }
+
+  // ==========================================
   // LÓGICA DEL MODAL DE EDICIÓN USUARIO
   // ==========================================
   
   abrirModalEdicion(user: any) {
     this.usuarioSeleccionado = { ...user };
     this.nuevaPassword = '';
-    
     this.newImgBase64 = '';
     this.newImgName = '';
     this.previewUrl = null;
-
     this.modalEdicionAbierto = true;
   }
 
@@ -132,7 +187,6 @@ export class AdminPanel implements OnInit {
         alert('Solo se permiten archivos de imagen');
         return;
       }
-
       this.newImgName = file.name;
       const reader = new FileReader();
       reader.onload = () => {
@@ -190,7 +244,7 @@ export class AdminPanel implements OnInit {
         next: (res: any) => {
             this.listaPostsUsuario = Array.isArray(res) ? res : []; 
             this.cargandoPosts = false;
-            this.cdr.detectChanges(); // IMPORTANTE: Actualizar vista
+            this.cdr.detectChanges();
         },
         error: (err) => {
             console.error(err);

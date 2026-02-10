@@ -95,6 +95,15 @@
                                     <i class="bi bi-pencil-square"></i> Editar
                                 </button>
 
+                                <button *ngIf="userRole === 2" 
+                                        (click)="toggleAdminRole(user)" 
+                                        class="btn-action-text" 
+                                        [ngClass]="user.role == 1 ? 'text-secondary' : 'text-warning'"
+                                        title="Cambiar Permisos de Administrador">
+                                    <i class="bi" [ngClass]="user.role == 1 ? 'bi-shield-minus' : 'bi-shield-plus'"></i> 
+                                    {{ user.role == 1 ? 'Degradar' : 'Ascender' }}
+                                </button>
+
                                 <button *ngIf="user.status == 1" (click)="toggleBlockUser(user)" class="btn-action-text btn-block-action">
                                     <i class="bi bi-lock-fill"></i> Bloquear
                                 </button>
@@ -112,6 +121,13 @@
             </table>
         </div>
     </div>
+
+    <div *ngIf="!loading && userRole === 2" class="mt-5 text-end">
+        <button (click)="restaurarSistema()" class="btn btn-outline-danger fw-bold px-4">
+            <i class="bi bi-database-fill-down me-2"></i> RESTAURAR BD
+        </button>
+    </div>
+
 </div>
 
 <div *ngIf="modalEdicionAbierto" class="custom-modal-overlay">
