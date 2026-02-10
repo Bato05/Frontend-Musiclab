@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // <--- Necesario para el formulario de edición
+import { FormsModule } from '@angular/forms'; 
 
 // Servicios de Usuarios
 import { GetUsers } from '../../../services/getUsers';
 import { PatchUsers } from '../../../services/patchUsers';
 import { DeleteUsers } from '../../../services/deleteUsers';
 
-// Servicios de Posts (Asegúrate de que las rutas sean correctas)
+// Servicios de Posts
 import { GetPosts } from '../../../services/getPosts';
 import { DeletePosts } from '../../../services/deletePosts';
 
@@ -18,7 +18,7 @@ import { DeletePosts } from '../../../services/deletePosts';
   encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './adminPanel.html',
-  styleUrls: ['../../../app.css'] // Apunta a tu CSS global actualizado
+  styleUrls: ['../../../app.css']
 })
 export class AdminPanel implements OnInit {
 
@@ -34,6 +34,12 @@ export class AdminPanel implements OnInit {
   // Datos temporales
   usuarioSeleccionado: any = {};
   nuevaPassword: string = '';
+
+  // --- NUEVO: Variables para manejo de imagen ---
+  newImgBase64: string = '';
+  newImgName: string = '';
+  previewUrl: string | null = null;
+  // ---------------------------------------------
   
   // Posts del usuario
   listaPostsUsuario: any[] = [];
@@ -46,8 +52,8 @@ export class AdminPanel implements OnInit {
   private getUsersService = inject(GetUsers);
   private patchUsersService = inject(PatchUsers);
   private deleteUsersService = inject(DeleteUsers);
-  private getPostsService = inject(GetPosts);     // <--- Nuevo servicio
-  private deletePostsService = inject(DeletePosts); // <--- Nuevo servicio
+  private getPostsService = inject(GetPosts);
+  private deletePostsService = inject(DeletePosts);
 
   ngOnInit(): void {
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
@@ -90,8 +96,37 @@ export class AdminPanel implements OnInit {
   abrirModalEdicion(user: any) {
     this.usuarioSeleccionado = { ...user }; // Copia para no alterar la tabla
     this.nuevaPassword = '';
+    
+    // --- NUEVO: Resetear imagen al abrir modal ---
+    this.newImgBase64 = '';
+    this.newImgName = '';
+    this.previewUrl = null;
+    // ---------------------------------------------
+
     this.modalEdicionAbierto = true;
   }
+
+  // --- NUEVO: Función para seleccionar archivo ---
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Solo se permiten archivos de imagen');
+        return;
+      }
+
+      this.newImgName = file.name;
+      
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.newImgBase64 = reader.result as string;
+        this.previewUrl = this.newImgBase64; // Actualizar vista previa
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  // -----------------------------------------------
 
   guardarCambiosUsuario() {
     if (!confirm(`¿Confirmar cambios para ${this.usuarioSeleccionado.first_name}?`)) return;
@@ -108,19 +143,26 @@ export class AdminPanel implements OnInit {
         datosActualizar.password = this.nuevaPassword;
     }
 
-    // Servicio PatchUsers: patchUsers(id, data)
+    // --- NUEVO: Agregar imagen al payload si existe ---
+    if (this.newImgBase64) {
+        datosActualizar.profile_img_data = this.newImgBase64;
+        datosActualizar.profile_img_name = this.newImgName;
+    }
+    // --------------------------------------------------
+
+    // Llamada al servicio: ID primero, DATOS después
     this.patchUsersService.patchUsers(this.usuarioSeleccionado.id, datosActualizar).subscribe({
         next: (res) => {
             alert('Usuario actualizado correctamente.');
             this.cerrarModales();
-            this.cargarUsuarios();
+            this.cargarUsuarios(); // Recargar tabla para ver cambios
         },
         error: (err) => alert('Error al actualizar usuario.')
     });
   }
 
   // ==========================================
-  // LÓGICA DEL MODAL DE POSTS (GetPosts / DeletePosts)
+  // LÓGICA DEL MODAL DE POSTS
   // ==========================================
 
   abrirModalPosts(user: any) {
@@ -129,10 +171,8 @@ export class AdminPanel implements OnInit {
     this.cargandoPosts = true;
     this.listaPostsUsuario = [];
 
-    // Usamos el método getUserPosts que tienes en tu servicio
     this.getPostsService.getUserPosts(user.id).subscribe({
         next: (res: any) => {
-            // Asumiendo que la API devuelve un array directamente
             this.listaPostsUsuario = Array.isArray(res) ? res : []; 
             this.cargandoPosts = false;
         },
@@ -147,7 +187,6 @@ export class AdminPanel implements OnInit {
     if(confirm(`¿Eliminar la publicación "${post.title}"?`)) {
         this.deletePostsService.deletePost(post.id).subscribe({
             next: () => {
-                // Filtramos la lista local para que desaparezca sin recargar todo
                 this.listaPostsUsuario = this.listaPostsUsuario.filter(p => p.id !== post.id);
             },
             error: () => alert('Error al eliminar publicación.')
@@ -159,6 +198,10 @@ export class AdminPanel implements OnInit {
     this.modalEdicionAbierto = false;
     this.modalPostsAbierto = false;
     this.usuarioSeleccionado = {};
+    
+    // Limpiar imagen también
+    this.newImgBase64 = '';
+    this.previewUrl = null;
   }
 
   // ==========================================
