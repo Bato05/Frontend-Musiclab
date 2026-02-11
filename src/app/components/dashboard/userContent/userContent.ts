@@ -57,7 +57,7 @@ export class UserContent implements OnInit {
     this.cargarMisSeguidos();
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     
-    // 2. Extracción SEGURA del rol
+    // 2. Extracción del rol
     // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
     const rawRole = sesion.user?.role || sesion.role || 0;
 
@@ -163,8 +163,6 @@ export class UserContent implements OnInit {
 
     const formVal = this.formEdicion.value;
 
-    // 2. CORRECCIÓN CLAVE: Limpieza de destination_id
-    // Si la visibilidad NO es 'followers', o el ID es 0/null, mandamos null explícitamente.
     let idDestinoLimpio = formVal.destination_id;
     if (formVal.visibility !== 'followers' || !idDestinoLimpio || idDestinoLimpio === 0) {
         idDestinoLimpio = null;

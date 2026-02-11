@@ -9,8 +9,7 @@ import { HttpClient } from '@angular/common/http';
 export class RegisterService {
   private http = inject(HttpClient); // Inyección de dependencia
 
-// La URL debe apuntar a tu archivo index.php
-// y pasarle la acción 'users' para que el método POST llame a postUsers()
+// pasarle la acción 'users' para que el método POST llame a postUsers()
 private apiUrl = 'http://localhost/phpMusicLab/api/index.php?accion=users';
 
   postUser(userData: any): Observable<any> {

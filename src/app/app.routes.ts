@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './services/guardService'; // Importamos el guard
+import { authGuard } from './services/guardService'; // Importacion del guard
 
 import { Login } from './components/forms/login/login';
 import { Register } from './components/forms/register/register';

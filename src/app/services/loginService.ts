@@ -9,8 +9,7 @@ import { Observable } from 'rxjs';
 export class LoginService {
   private http = inject(HttpClient);
 
-  // La URL debe apuntar a tu archivo index.php
-  // y pasarle la acción 'login' para que el método POST llame a postLogin()
+  // acción 'login' para que el método POST llame a postLogin()
   private apiUrl = 'http://localhost/phpMusicLab/api/index.php?accion=login';
 
   postLogin(userData: any): Observable<any> {

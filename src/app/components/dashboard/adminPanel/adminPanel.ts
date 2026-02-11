@@ -70,7 +70,7 @@ export class AdminPanel implements OnInit {
   private deletePostsService = inject(DeletePosts);
   private patchPostService = inject(PatchPost);
   private restoreService = inject(RestoreDatabase);
-  private siteConfigService = inject(SiteConfigService); // <--- Inyección
+  private siteConfigService = inject(SiteConfigService);
 
   constructor() {
     // Formulario para editar Posts
@@ -111,9 +111,7 @@ export class AdminPanel implements OnInit {
     });
   }
 
-  // ==========================================
   // CARGA DE USUARIOS
-  // ==========================================
   cargarUsuarios() {
     this.loading = true;
     this.getUsersService.getUsers().subscribe({
@@ -142,9 +140,7 @@ export class AdminPanel implements OnInit {
     event.target.src = 'http://localhost/phpMusicLab/assets/default_profile.png';
   }
 
-  // ==========================================
   // LÓGICA: CAMBIO DE ROL (SOLO OWNER)
-  // ==========================================
   toggleAdminRole(user: any) {
     if (this.userRole !== 2) return;
 
@@ -164,9 +160,7 @@ export class AdminPanel implements OnInit {
     }
   }
 
-  // ==========================================
   // LÓGICA: RESTAURAR BD (SOLO OWNER)
-  // ==========================================
   restaurarSistema() {
     if (this.userRole !== 2) return; 
     if (!confirm("⚠️ ¿Estás seguro de que quieres RESTAURAR la base de datos?\n\nSe borrarán todos los cambios recientes.")) return;
@@ -189,10 +183,8 @@ export class AdminPanel implements OnInit {
     });
   }
 
-  // ==============================================
-  // LÓGICA: CONFIGURACIÓN DEL SITIO (NUEVO)
-  // ==============================================
 
+  // LÓGICA: CONFIGURACIÓN DEL SITIO
   abrirModalConfig() {
     // Nos suscribimos al estado actual del servicio para llenar el formulario
     // Usamos 'take(1)' o una suscripción directa simple porque config$ es un BehaviorSubject
@@ -236,8 +228,6 @@ export class AdminPanel implements OnInit {
         }
     });
   }
-
-  // ... (Resto de funciones: Modales Edición, Posts, etc. se mantienen igual) ...
 
   abrirModalEdicion(user: any) {
     this.usuarioSeleccionado = { ...user };
@@ -404,7 +394,7 @@ export class AdminPanel implements OnInit {
     this.modalEdicionAbierto = false;
     this.modalPostsAbierto = false;
     this.modalEditarPostAbierto = false;
-    this.modalConfigAbierto = false; // Cerramos el nuevo modal
+    this.modalConfigAbierto = false; 
     this.usuarioSeleccionado = {};
     this.newImgBase64 = '';
     this.previewUrl = null;

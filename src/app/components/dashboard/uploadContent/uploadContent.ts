@@ -51,7 +51,7 @@ export class UploadContent implements OnInit {
     this.cargarSeguidos();
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     
-    // 2. Extracción SEGURA del rol
+    // 2. Extracción del rol
     // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
     const rawRole = sesion.user?.role || sesion.role || 0;
 
@@ -73,7 +73,6 @@ export class UploadContent implements OnInit {
     if (miId) {
       this.followService.getFollowing(miId).subscribe({
         next: (res: any) => {
-          // Asumiendo que tu API devuelve { following: [...] }
           this.usersList = res.following || [];
         },
         error: (err) => console.error("Error al obtener seguidos", err)

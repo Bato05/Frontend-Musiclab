@@ -9,7 +9,7 @@ export class UploadService {
   private http = inject(HttpClient);
   private url = 'http://localhost/phpMusicLab/api/index.php?accion=posts';
 
-  // Ahora recibe un objeto JSON simple, no FormData
+  // recibe un objeto JSON simple
   postPosts(datos: any): Observable<any> {
     return this.http.post(this.url, datos);
   }

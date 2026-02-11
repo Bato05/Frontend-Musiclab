@@ -144,7 +144,7 @@ select.form-control {
     border-radius: 14px;
     color: #ffffff;
     padding: 10px;
-    min-height: 200px; /* Espacio para que las opciones respiren */
+    min-height: 200px; /* Espacio para que las opciones */
     transition: all 0.3s ease;
     outline: none;
     overflow-y: auto;
@@ -173,14 +173,14 @@ select.form-control option:checked {
     /* Color de fondo base (Púrpura) */
     background-color: var(--neon-purple);
     
-    /* El truco: Doble sombra interna para simular el degradado lineal del botón */
+    /* Doble sombra interna para simular el degradado lineal del botón */
     /* La sombra rosa se empuja desde la derecha para mezclar los colores */
     box-shadow: inset -100px 0 40px -20px var(--neon-pink), 
                 0 0 10px 100px var(--neon-purple) inset;
     
     color: white;
     font-weight: 700;
-    -webkit-text-fill-color: white; /* Vital para Chromium */
+    -webkit-text-fill-color: white; 
 }
 
 /* 5. Hover (Al pasar el mouse) */
@@ -189,9 +189,9 @@ select.form-control option:hover {
     color: var(--neon-pink);
 }
 
-/* 6. CORRECCIÓN FINAL: ELIMINACIÓN DEL FOCO BLANCO DEL SISTEMA */
+/* 6. ELIMINACIÓN DEL FOCO BLANCO DEL SISTEMA */
 select.form-control:focus option:checked {
-    /* Mantenemos el efecto neón incluso cuando tiene el foco del teclado */
+    /* Se mantiene el efecto neón incluso cuando tiene el foco del teclado */
     background-image: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
     box-shadow: inset -100px 0 40px -20px var(--neon-pink), 
                 0 0 10px 100px var(--neon-purple) inset;
@@ -251,7 +251,7 @@ select.form-control:focus option:checked {
 .card-date {
   /* Usamos una fuente monoespaciada para darle un toque "digital" */
   font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
-  font-size: 0.9rem; /* Un poco más grande para mejorar la lectura */
+  font-size: 0.9rem; /* más grande para mejorar la lectura */
   
   /* Color Cyan Neón para máximo contraste sobre el fondo oscuro */
   color: #00f2ff; 
@@ -286,7 +286,7 @@ select.form-control:focus option:checked {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--glass-border);
   padding: 1rem 2rem;
-  position: sticky; /* O fixed, según prefieras */
+  position: sticky; 
   top: 0;
   z-index: 1050; /* Valor estándar de Bootstrap para estar arriba */
 }
@@ -325,7 +325,7 @@ select.form-control:focus option:checked {
   color: var(--neon-pink);
   text-shadow: 0 0 10px var(--neon-pink);
 }
-/* Línea divisoria si llegaras a usarla */
+/* Línea divisoria */
 .dropdown-divider {
   border-top: 1px solid var(--glass-border);
 }
@@ -334,13 +334,13 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
-    /* Usamos el color extraído de tu imagen (#2e244d) como fondo sólido */
+    /* color como fondo sólido */
     -webkit-box-shadow: 0 0 0 1000px #2e244d inset;
     
     /* Forzamos el color del texto a blanco para que sea legible */
     -webkit-text-fill-color: white;
     
-    /* Truco técnico para mantener el color estable y evitar parpadeos */
+    /* mantiene el color estable y evitar parpadeos */
     transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -385,7 +385,7 @@ body nav.navbar .navbar-nav .nav-link:hover {
   color: white;
 }
 
-/* 4. Estado Activo: Efecto Neón Rosa (Match con botones) */
+/* 4. Estado Activo: Efecto Neón Rosa */
 body nav.navbar .navbar-nav .nav-link.active {
   color: var(--neon-pink);
   text-shadow: 0 0 10px var(--neon-pink), 0 0 20px rgba(255, 0, 128, 0.3);
@@ -403,7 +403,7 @@ body nav.navbar .navbar-nav .nav-link.active::after {
   box-shadow: 0 0 10px var(--neon-pink);
 }
 
-/* 5. Botón Log Out (Peligro refinado) */
+/* 5. Botón Log Out */
 body nav.navbar .btn-outline-danger {
   border: 1px solid rgba(220, 53, 69, 0.5);
   color: #ff4d4d;
@@ -437,7 +437,7 @@ body nav.navbar .btn-outline-danger:hover {
 
 /* 1. Redondear el botón nativo "Choose File" */
 input[type="file"]::file-selector-button {
-  border-radius: 12px; /* Redondeado solicitado */
+  border-radius: 12px; /* Redondeado */
   border: 1px solid var(--glass-border);
   background-color: #e9ecef; /* Color gris suave por defecto */
   padding: 0.5rem 1rem;
@@ -454,7 +454,7 @@ input[type="file"]::file-selector-button:hover {
 
 /* 2. Color de las letras "No file chosen" en negro cuando no hay selección */
 input[type="file"] {
-  color: #000000; /* Texto en negro solicitado */
+  color: #000000; /* Texto en negro */
   font-weight: 500;
 }
 
@@ -476,7 +476,7 @@ input[type="file"].file-selected {
 .profile-img-post {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Evita que la foto se estire feo */
+  object-fit: cover; /* Evita que la foto se estire */
 }
 
 /* =========================================
@@ -612,7 +612,6 @@ input[type="file"].file-selected {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Se quitó la animación fadeIn */
 }
 
 .custom-modal-content {

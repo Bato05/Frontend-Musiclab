@@ -12,8 +12,6 @@ export class DeletePosts {
   
   // Borrar publicación (Misma estructura, solo agregamos la "llave" del token)
   deletePost(postId: number | string): Observable<any> {
-    // Asegúrate de obtener el token correcto del almacenamiento
-    // Nota: En login.ts guardaste la respuesta completa como 'user_session'
     const sesionRaw = localStorage.getItem('user_session');
     const sesion = sesionRaw ? JSON.parse(sesionRaw) : null;
     const token = sesion?.token; // Extrae el token del objeto de sesión

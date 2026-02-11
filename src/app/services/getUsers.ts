@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 })
 export class GetUsers {
   private http = inject(HttpClient);
-  // Ajusta esta URL si tu carpeta no se llama "phpMusicLab"
   private url = 'http://localhost/phpMusicLab/api/index.php?accion=users';
 
   constructor() { }

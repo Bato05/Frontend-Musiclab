@@ -28,7 +28,7 @@ export class Home implements OnInit {
   ngOnInit(): void {
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     
-    // 2. Extracción SEGURA del rol
+    // 2. Extracción del rol
     // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
     const rawRole = sesion.user?.role || sesion.role || 0;
 

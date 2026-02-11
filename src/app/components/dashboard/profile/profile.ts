@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // Quitamos Validators que ya no se usan
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; 
 import { GetUsers } from '../../../services/getUsers';
 import { PatchUsers } from '../../../services/patchUsers';
 import { SiteConfigService } from '../../../services/siteConfigService';
@@ -38,7 +38,6 @@ export class Profile implements OnInit {
   private siteConfigService = inject(SiteConfigService);
 
   constructor() {
-    // ELIMINADO: campo email
     this.profileForm = this.fb.group({
       first_name: [''],
       last_name: [''],
@@ -51,7 +50,7 @@ export class Profile implements OnInit {
     this.cargarDatosUsuario();
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     
-    // 2. Extracción SEGURA del rol
+    // 2. Extracción del rol
     // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
     const rawRole = sesion.user?.role || sesion.role || 0;
 
@@ -76,7 +75,6 @@ export class Profile implements OnInit {
           this.originalData = {
             first_name: res.first_name,
             last_name: res.last_name,
-            // ELIMINADO: email
             artist_type: res.artist_type,
             bio: res.bio || ''
           };
@@ -103,7 +101,6 @@ export class Profile implements OnInit {
     if (this.newImgBase64) return true;
     
     const current = this.profileForm.value;
-    // ELIMINADO: comparación de email
     if (current.first_name !== this.originalData.first_name) return true;
     if (current.last_name !== this.originalData.last_name) return true;
     if (current.artist_type !== this.originalData.artist_type) return true;
@@ -149,7 +146,6 @@ export class Profile implements OnInit {
         payload.profile_img_name = this.newImgName;
       }
 
-      // CORRECCIÓN: Primero el userId, luego el payload
       this.patchUsersService.patchUsers(userId, payload).subscribe({
         next: (res: any) => {
           alert('Profile updated successfully!');

@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 })
 export class PatchUsers {
   private http = inject(HttpClient);
-  // Ajusta la ruta si es diferente en tu proyecto
   private url = 'http://localhost/phpMusicLab/api/index.php?accion=users';
 
   constructor() { }
@@ -17,13 +16,11 @@ export class PatchUsers {
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     const token = sesion.token;
 
-    // Angular envía JSON por defecto, así que solo pasamos el objeto 'userData'
-    // No usamos FormData ni headers raros, solo el token.
+    // Angular envía JSON por defecto, así que solo pasamos el objeto 'userData' y solo usamos el token.
     const headers = {
       'Authorization': `Bearer ${token}`
     };
 
-    // Usamos el método PATCH real HTTP
     return this.http.patch(`${this.url}/${id}`, userData, { headers });
   }
 }

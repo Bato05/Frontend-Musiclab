@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; // <--- Importamos HttpHeaders
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // <--- Importacion del HttpHeaders
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
@@ -23,9 +23,7 @@ export class SiteConfigService {
   // --- FUNCIÓN PRIVADA PARA OBTENER CABECERAS CON TOKEN ---
   private getHeaders(): HttpHeaders {
     // Recuperamos el token del almacenamiento local
-    // Asegúrate de que la clave sea 'token' o la que uses en tu login ('user_token', etc.)
-    // Según tu loginService, parece que guardas el objeto entero en 'user_session'.
-    // Vamos a intentar obtenerlo de ahí si no está suelto.
+    // Asegúrate de que la clave sea 'token' 
     
     let token = localStorage.getItem('token'); 
     
@@ -34,7 +32,7 @@ export class SiteConfigService {
         const session = localStorage.getItem('user_session');
         if (session) {
             const parsedSession = JSON.parse(session);
-            token = parsedSession.token || ''; // Ajusta según la estructura de tu JSON de sesión
+            token = parsedSession.token || ''; 
         }
     }
 

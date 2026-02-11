@@ -37,7 +37,6 @@ export class Register implements OnInit {
       last_name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      // Agregamos campos que faltaban en la validación del TS pero estaban en el HTML
       confirm_password: [''], 
       artist_type: ['', Validators.required],
       bio: ['']
@@ -58,7 +57,7 @@ export class Register implements OnInit {
 
   registrarse() {
     if (this.formulario.valid) {
-      // Opcional: Validar que las contraseñas coincidan aquí antes de enviar
+      // Validar que las contraseñas coincidan aquí antes de enviar
       if (this.formulario.value.password !== this.formulario.value.confirm_password) {
           alert("Las contraseñas no coinciden.");
           return;

@@ -46,7 +46,7 @@ export class Settings implements OnInit {
     this.cargarDatosUsuario();
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     
-    // 2. Extracción SEGURA del rol
+    // 2. Extracción del rol
     // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
     const rawRole = sesion.user?.role || sesion.role || 0;
 
@@ -96,7 +96,7 @@ export class Settings implements OnInit {
 
   /**
    * Determina si el botón debe habilitarse.
-   * Se habilita si el email cambió O si se ingresó una contraseña.
+   * Se habilita si el email cambió O si se ingresó una contraseña nueva.
    */
   hasChanges(): boolean {
     const formEmail = (this.settingsForm.get('email')?.value || '').trim();

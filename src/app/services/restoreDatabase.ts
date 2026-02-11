@@ -7,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 export class RestoreDatabase {
   private http = inject(HttpClient);
 
-  // Corregido: 'localhost/phpMusicLab' (sin doble barra)
   private apiUrl = 'http://localhost/phpMusicLab/api/restore';
 
   restoreDB() {
@@ -16,7 +15,6 @@ export class RestoreDatabase {
         password: '123456'
     };
     
-    // Faltaba esta parte fundamental:
     return this.http.post(this.apiUrl, payload);
   }
 }

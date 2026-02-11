@@ -17,7 +17,6 @@ export class FollowService {
   getFollowing(userId: number | string): Observable<any> {
   const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
   const token = sesion.token;
-  // Agregamos el header por si tu API lo requiere para validar quién pide la info
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   
   // Usamos el ID en la URL: http://localhost/.../index.php?accion=followers/1

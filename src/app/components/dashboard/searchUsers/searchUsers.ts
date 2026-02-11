@@ -48,7 +48,7 @@ export class SearchUsers implements OnInit {
     this.cargarSeguidos(); 
     const sesion = JSON.parse(localStorage.getItem('user_session') || '{}');
     
-    // 2. Extracción SEGURA del rol
+    // 2. Extracción del rol
     // Intenta leer 'sesion.user.role'. Si no existe, usa '0' para evitar NaN.
     const rawRole = sesion.user?.role || sesion.role || 0;
 
@@ -63,7 +63,6 @@ export class SearchUsers implements OnInit {
     });
   }
 
-  // --- FUNCIÓN QUE FALTABA ---
   cargarArtistas(): void {
     this.loading = true;
 
@@ -74,11 +73,11 @@ export class SearchUsers implements OnInit {
     this.usersService.getUsers().subscribe({
       next: (res: any) => {
         // 2. Procesamos la lista:
-        //    Primero: Convertimos el ID a número (tu truco de oro).
-        //    Segundo: Filtramos para que SOLO pasen los que NO son yo.
+        //    Primero: Convertimos el ID a número
+        //    Segundo: Filtramos para que SOLO pasen los que NO son yo como usuario logeado.
         const usuariosLimpios = res
             .map((u: any) => ({ ...u, id: Number(u.id) })) 
-            .filter((u: any) => u.id !== miId); // <--- AQUÍ ESTÁ LA MAGIA
+            .filter((u: any) => u.id !== miId); 
 
         this.allArtists = usuariosLimpios;
         this.filteredArtists = usuariosLimpios;
