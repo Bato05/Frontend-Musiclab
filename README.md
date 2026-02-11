@@ -1,59 +1,54 @@
-# MusiclabFrontend
+MusicLab - Proyecto Final Programación Web 1
+Carátula
+Autor: Bautista Rodriguez
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+Docente: Santiago Oscar Fazzini
 
-## Development server
+Materia: Programación Web 1
 
-To start a local development server, run:
+Institución: UCES - Tecnicatura en Programación de Sistemas
 
-```bash
-ng serve
-```
+Fecha de presentación: 11 de febrero de 2026
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Descripción del Sistema
+MusicLab es una plataforma interactiva desarrollada como trabajo final para la materia Programación Web 1. El sistema permite a los usuarios gestionar contenido multimedia en un entorno social y administrativo.
 
-## Code scaffolding
+Funcionalidades Implementadas:
+Autenticación y Perfiles: Registro de nuevos usuarios e inicio de sesión seguro. Cada usuario cuenta con un perfil personal donde se visualiza su contenido.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Interacción Social: Sistema de búsqueda de usuarios y funcionalidad de "Seguir", permitiendo una red de contactos dentro de la plataforma para ver actualizaciones de otros perfiles.
 
-```bash
-ng generate component component-name
-```
+Gestión de Contenido: Capacidad para subir y compartir archivos de audio, imágenes y texto (posteos).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Panel de Administración: Espacio exclusivo para usuarios con privilegios de administrador, permitiendo el control total (ABM) sobre usuarios, publicaciones, categorías y estilos del sitio.
 
-```bash
-ng generate --help
-```
+Detalles Técnicos
+Backend
+Desarrollado íntegramente en PHP Nativo.
 
-## Building
+Se optó por no utilizar frameworks externos para demostrar el manejo de la lógica de servidor, sesiones y conexión a base de datos mediante código propio.
 
-To build the project run:
+Implementación de una arquitectura de API para la comunicación con el frontend.
 
-```bash
-ng build
-```
+Base de datos: MySQL.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Frontend
+La interfaz de usuario fue construida utilizando Angular.
 
-## Running unit tests
+Uso de programación reactiva y componentes modulares.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Consumo de servicios asíncronos para la persistencia de datos con el backend de PHP.
 
-```bash
-ng test
-```
+Recursos de Terceros
+Font Awesome (fontawesome.com): Se utilizaron iconos de esta biblioteca exclusivamente para mejorar la estética de los placeholders en los campos de entrada (inputs) y elementos visuales de navegación.
 
-## Running end-to-end tests
+Instrucciones de Instalación
+Base de Datos: Importar el volcado SQL ubicado en database/musiclab_db.sql en un servidor MySQL.
 
-For end-to-end (e2e) testing, run:
+Configuración: Ajustar los parámetros de conexión en config/config.php.
 
-```bash
-ng e2e
-```
+Despliegue:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Subir el contenido de la carpeta de backend al servidor mediante FTP/SSH.
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Para el frontend, ejecutar npm install seguido de ng serve para ejecución local o realizar el ng build para obtener los archivos de producción.
